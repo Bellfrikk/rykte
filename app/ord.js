@@ -1,0 +1,1 @@
+export const ord = ['sykkel', 'hus', 'katteMat', 'hund', 'bil', 'tre', 'blomst', 'fjell', 'elv', 'sol', 'måne', 'stjerne', 'fugl', 'fisk', 'båt', 'fly', 'bru', 'vei', 'park', 'skule', 'bok', 'penn', 'bord', 'stol', 'vindu', 'dør'];

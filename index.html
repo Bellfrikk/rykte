@@ -1,20 +1,73 @@
-<html>
+<!DOCTYPE html>
+<html lang="no">
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rykte går!</title>
-    <style>
-      body{
-        background: black;
-        color: white;
-        width:100vw;
-        height:100dvh;
-        overflow:hidden;
-      }
-    </style>
-    <body>
+    <link rel="stylesheet" href="./app/stil.css">
+
+  </head>
+  <body>
+    <!-- Spelar Fane-->
+    <div class="fane" id="spelarFane">
+      <h1>Rykte går!</h1>
+      <form id="nySpelarForm">
+        <input type="text" id="spelarNavn" name="spelarNavn" placeholder="Ditt navn" required>
+        <button type="button" id="lagNySpelarKnapp">Neste</button>
+      </form>
+    </div>
+    <!-- Gruppe Fane-->
+    <div class="fane usynlig" id="gruppeFane">
       <h1>Rykte går!</h1>
       <div id="grupper">
-        <button onclick="lagNyGruppe">Ny gruppa</button>
+        <button type="button" id="lagNyGruppeKnapp">Lag ny gruppa</button>
       </div>
-    </body>
-  </head>
+    </div>
+    <!-- Ny Gruppe Fane-->
+    <div class="fane usynlig" id="nyGruppeFane">
+      <h1>Rykte går!</h1>
+    Lag ny gruppe.
+    <form id="nyGruppeForm">
+      <input type="text" id="gruppeNavn" name="gruppeNavn" required placeholder="Gruppenavn">
+      <input type="number" id="tegneTid"name="tegneTid" min="10" max="300" value="60" required placeholder="Tegnetid (sekunder):">
+      <input type="number" id="gjetteTid"name="gjetteTid" min="10" max="300" value="60" required placeholder="Gjettetid (sekunder):">
+      <button type="button" id="lagreGruppeKnapp">Opprett gruppe</button>
+    </form>
+    </div>
+    <!-- Vent på Gruppe Fane-->
+    <div id="venteFane" class="fane usynlig">
+      <h1>Rykte går!</h1>
+      <div id="gruppeInfo"></div>
+      <button class="usynlig" type="button" id="startRundeKnapp">Start Runde</button>
+      <div id="venteSpelarar">
+      </div>
+    </div>
+    <!-- Velg Ord Fane-->
+    <div id="velgOrdFane" class="fane usynlig">
+      <h1>Rykte går!</h1>
+      <div id="velgeOrd">
+        <p>Velg kva du vil tegne:</p>
+      </div>
+    </div>
+    <!-- Teine Fane-->
+    <div id="teineFane" class=" fane usynlig">
+      <div id="infoLinje">
+        <div id="nedtelling">0:00</div>
+        <div id="teineOrd">Fisk</div>
+        <div id="ferdigKnapp">⏭</div>
+      </div>
+      <canvas id="tegneflate"></canvas>
+      <div id="blyantViskKnapp">✏</div>
+    </div>
+    <!-- Gjette Fane-->
+    <div id="gjetteFane" class=" fane usynlig">
+      <img id="gjetteBilde"/ alt="Vent på bilde">
+      <form id="gjettOrdForm">
+        <input type="text" id="gjettaOrdFelt" name="Gjetta ord" placeholder="Skriv det du trur det er.." required>
+        <button type="button" id="lagreGjetting">Neste</button>
+      </form>
+    </div>
+  </body>
+  <script type="module" src="./app/hoved.js"></script>
+
 </html>

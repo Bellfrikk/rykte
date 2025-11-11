@@ -1,0 +1,129 @@
+body {
+  background-color: #1e1e1e; /* mørk, rolig bakgrunn */
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  margin: 0;
+  overflow:hidden;
+}
+
+.ffane {
+  width: min(90%, 600px);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 30px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+  scrollbar-width: none; /* Firefox */
+}
+.fane{
+  position:absolute;
+  top:0px;
+  height:100dvh;
+  width: min(98%, 600px);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 10px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+label {
+  font-size: 1rem;
+  color: #ccc;
+}
+
+input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: clamp(20px, 5vh, 100px);
+  background-color: #3a3a3a;
+  color: #f0f0f0;
+  border: none;
+  border-radius: 40px;
+  outline: none;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  box-sizing: border-box;
+  text-align: center;
+}
+
+input:focus {
+  background-color: #444;
+}
+
+.fane button {
+  margin-top: 10px;
+  padding: 12px;
+  width:100%;
+  background-color: #3a3a3a;
+  color: #f0f0f0;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  border: none;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.usynlig {
+  display: none;
+}
+
+/* Hide scrollbar for WebKit-based browsers */
+.fane::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+#grupper {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  overflow-y: auto;
+}
+#tegneFane{
+  height: 100%;
+}
+#infoLinje {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin:0;
+}
+#nedtelling {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: bold;
+}
+#teineOrd {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: bold;
+  text-align: center;
+  flex-grow: 1;
+}
+#blyantViskKnapp {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  align-content: center;
+}
+#tegneflate {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #555;
+  border-radius: 12px;
+  background-color: #fffff3;
+  touch-action: none; /* Bedre å tegne */
+}
