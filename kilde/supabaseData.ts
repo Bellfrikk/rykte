@@ -1,6 +1,6 @@
 
 // @ts-ignore // Forhindre feil om manglande typer for CDN-import
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/+esm';
 //import { createClient } from '@supabase/supabase-js';
 import type { Database } from './database.types';
 

@@ -1,295 +1,104 @@
-import { supabase } from './supabaseData.js';
-import { ord } from './ord.js';
-let minSpelarId;
-let miGruppeId;
-let maksFolk;
-let rundeNr = 1;
-let grupperOppdateringKanal;
-let gruppeStatusKanal;
-let spelarOppdateringKanal;
-function status(nyStatus) {
-    if (nyStatus === 'harLagaSpelar') {
-        document.getElementById('spelarFane').classList.add('usynlig');
+import { stengGrupperOppdateringKanal } from './gruppe.js';
+import { velgOrdOgNavn } from './velgOrdOgNavn.js';
+import { velgGruppeOppsett } from './gruppe.js';
+import { lagGruppeOppsett } from './lagGruppe.js';
+import { venteFaneOppsett } from './venteFane.js';
+import { tegneOppsett, startTegning } from './tegning.js';
+import { gjetteOppsett } from './gjettOrd.js';
+import { logikk } from './logikk.js';
+/*
+lage gruppe
+  lagre nye data*
+
+velge gruppe*
+  hent gruppenr og spelar nr, tid, sider*
+  lagre nytt spelarnr*
+  velge ord*
+  lagre ord og navn på side 1*
+  gå til venteside*
+
+venteside
+  vent på ny gruppestatus*
+   start hent teining og ord kanal*
+  spelar 1 starter gruppa*
+
+teineside*
+  start nedtelling*
+  lagre tegning*
+  gå til ord*
+
+ord side
+  start nedtelling
+  lagre ord
+  sjekk om rundar er ferdig
+    gå til teining eller vis
+
+visSide
+  vis venteside
+  spelar 1 kan starte
+  vent på gruppe kanal status
+    aktiver rett knapp
+    endre status på tegning eller ord
+    sjekk om ferdig og endre gruppestatus
+
+*/
+export let miGruppeId;
+export function gruppeIdSetter(nyId) { miGruppeId = nyId; console.log('min gruppeId er satt til ' + miGruppeId); }
+export let minSpelarId = 1;
+export function spelarIdSetter(nyId) { minSpelarId = nyId; console.log('min spelarId er satt til ' + minSpelarId); }
+export let navn;
+export function navnSetter(nyttNavn) { navn = nyttNavn; console.log('min navn er satt til ' + navn); }
+export let naboSpelar;
+export function naboSpelarSetter(nyId) { naboSpelar = nyId; console.log('min naboSpelar er satt til ' + naboSpelar); }
+export let tegneTid;
+export function tegneTidSetter(nyTid) { tegneTid = nyTid; console.log('min tegneTid er satt til ' + tegneTid); }
+export let gjetteTid;
+export function gjetteTidSetter(nyTid) { gjetteTid = nyTid; console.log('min gjetteTid er satt til ' + gjetteTid); }
+export let antalSider;
+export function antalSiderSetter(nyNr) { antalSider = nyNr; console.log('min antalSider er satt til ' + antalSider); }
+export let blokkNr;
+export function blokkNrSetter(nyNr) { blokkNr = nyNr; console.log('min blokkNr er satt til ' + blokkNr); }
+export let side = 0;
+export function sideSetter(nyNr) { side = nyNr; console.log('min side er satt til ' + side); }
+status('velgGruppe');
+export function status(nyStatus) {
+    if (nyStatus === 'velgGruppe') {
         document.getElementById('gruppeFane').classList.remove('usynlig');
-        hentGrupper();
+        velgGruppeOppsett();
     }
-    else if (nyStatus === 'skalLageNyGruppe') {
+    else if (nyStatus === 'lagGruppe') {
+        lagGruppeOppsett();
         document.getElementById('gruppeFane').classList.add('usynlig');
         document.getElementById('nyGruppeFane').classList.remove('usynlig');
     }
-    else if (nyStatus === 'harLagaNyGruppe') {
+    else if (nyStatus === 'velgOrd') {
+        velgOrdOgNavn();
         document.getElementById('nyGruppeFane').classList.add('usynlig');
-        document.getElementById('gruppeFane').classList.remove('usynlig');
-    }
-    else if (nyStatus === 'harValgtGruppe') {
         document.getElementById('gruppeFane').classList.add('usynlig');
-        document.getElementById('venteFane').classList.remove('usynlig');
-        supabase.removeChannel(grupperOppdateringKanal);
-        hentSpelarar();
-        hentGruppeStatus();
-    }
-    else if (nyStatus === 'ferdigMedVenting') {
-        document.getElementById('venteFane').classList.add('usynlig');
         document.getElementById('velgOrdFane').classList.remove('usynlig');
-        supabase.removeChannel(gruppeStatusKanal);
+        stengGrupperOppdateringKanal(); //hh
     }
-    else if (nyStatus === 'startGruppa') {
-        giBlokkNrTilSpelarar();
-    }
-    else if (nyStatus === 'startTeining') {
+    else if (nyStatus === 'venteTilStart') {
+        venteFaneOppsett();
+        logikk();
+        tegneOppsett();
+        gjetteOppsett();
         document.getElementById('velgOrdFane').classList.add('usynlig');
-        document.getElementById('teineFane').classList.remove('usynlig');
-        startTeineFane();
-        supabase.removeChannel(gruppeStatusKanal);
+        document.getElementById('venteFane').classList.remove('usynlig');
     }
-    else if (nyStatus === 'skalGjette') {
-        document.getElementById('teineFane').classList.add('usynlig');
+    else if (nyStatus === 'tegneFane') {
+        document.getElementById('venteFane').classList.add('usynlig');
+        document.getElementById('gjetteFane').classList.add('usynlig');
+        document.getElementById('tegneFane').classList.remove('usynlig');
+        startTegning();
+    }
+    else if (nyStatus === 'gjetteFane') {
+        document.getElementById('tegneFane').classList.add('usynlig');
         document.getElementById('gjetteFane').classList.remove('usynlig');
     }
-}
-//___spelar navn fane____________________________________________________________________________---
-document.getElementById('lagNySpelarKnapp')?.addEventListener('click', lagNySpelar);
-async function lagNySpelar() {
-    const spelarNavnInput = document.getElementById('spelarNavn');
-    const spelarNavn = spelarNavnInput.value.trim();
-    if (spelarNavn) {
-        const { data, error } = await supabase
-            .from('spelarTabell')
-            .insert([{ navn: spelarNavn }])
-            .select()
-            .single();
-        if (error) {
-            console.error('Feil ved lagring av spelar:', error);
-        }
-        else {
-            console.log('Spelar lagra:', data);
-            minSpelarId = data.spelarId;
-            status('harLagaSpelar');
-        }
-    }
-}
-//___gruppe fane____________________________________________________________________________
-async function hentGrupper() {
-    console.log('Hentar grupper fra Supabase...');
-    const { data, error } = await supabase.from('gruppeTabell').select('navn,gruppeId');
-    if (error)
-        console.error(error);
-    else if (data) {
-        data.forEach(denne => {
-            nyGruppeKnapp(denne.navn, denne.gruppeId);
-        });
-        console.log(data);
-    }
-    grupperOppdateringKanal = supabase
-        .channel('schema-db-changes')
-        .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'gruppeTabell',
-    }, (payload) => {
-        nyGruppeKnapp(payload.new.navn, payload.new.gruppeId);
-    })
-        .subscribe();
-}
-function nyGruppeKnapp(navn, nyGruppeId) {
-    let nyKnapp = document.createElement('button');
-    nyKnapp.innerText = navn;
-    nyKnapp.addEventListener('click', async () => {
-        const { data, error } = await supabase.from('spelarTabell').update({ gruppe: nyGruppeId }).eq('spelarId', minSpelarId);
-        if (error)
-            console.error(error);
-        miGruppeId = nyGruppeId;
-        document.getElementById('gruppeInfo').innerText = `Gruppeid: ${miGruppeId}`;
-        status('harValgtGruppe');
-    });
-    document.getElementById('grupper')?.appendChild(nyKnapp);
-}
-document.getElementById('lagNyGruppeKnapp')?.addEventListener('click', () => status('skalLageNyGruppe'));
-//___lag gruppe fane____________________________________________________________________________---
-document.getElementById('lagreGruppeKnapp')?.addEventListener('click', lagreGruppeKnapp);
-async function lagreGruppeKnapp() {
-    const gruppeNavnInput = document.getElementById('gruppeNavn');
-    const gruppeNavn = gruppeNavnInput.value.trim();
-    const tegneTidInput = document.getElementById('tegneTid');
-    const tegneTid = parseInt(tegneTidInput.value);
-    const gjetteTidInput = document.getElementById('gjetteTid');
-    const gjetteTid = parseInt(gjetteTidInput.value);
-    const { data, error } = await supabase
-        .from('gruppeTabell')
-        .insert([{ navn: gruppeNavn, lagaAv: minSpelarId, gjetteTid: gjetteTid, tegneTid: tegneTid, status: 'ny' }])
-        .select();
-    if (error)
-        console.error(error);
-    else {
-        status('harLagaNyGruppe');
-    }
-}
-//___vente fane____________________________________________________________________________---
-document.getElementById('startRundeKnapp')?.addEventListener('click', () => status('startGruppa'));
-async function hentSpelarar() {
-    //sjekk om det er du som har laga gruppa og som kan starte gruppa
-    const { data, error } = await supabase.from('gruppeTabell').select('lagaAv').eq('gruppeId', miGruppeId).single();
-    if (error)
-        console.error(error);
-    else if (data) {
-        if (data?.lagaAv === minSpelarId)
-            document.getElementById('startRundeKnapp').classList.remove('usynlig');
-        console.log(data.lagaAv + '===' + minSpelarId);
-    }
-    //hent alle spelarane i gruppa og vis på venteskjermen
-    const { data: data2, error: error2 } = await supabase.from('spelarTabell').select('navn').eq('gruppe', miGruppeId);
-    if (error2)
-        console.error(error2);
-    else if (data2) {
-        data2.forEach(denne => {
-            visSpelar(denne.navn);
-        });
-    }
-    spelarOppdateringKanal = supabase
-        .channel('spelarOppdateringKanalen')
-        .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'spelarTabell',
-        filter: `gruppe=eq.${miGruppeId}`,
-    }, (payload) => {
-        visSpelar(payload.new.navn);
-    })
-        .subscribe();
-}
-function visSpelar(spelarNavn) {
-    let nyDiv = document.createElement('div');
-    nyDiv.innerText = spelarNavn;
-    document.getElementById('venteSpelarar')?.appendChild(nyDiv);
-}
-async function hentGruppeStatus() {
-    gruppeStatusKanal = supabase.channel('gruppeStatus')
-        .on('postgres_changes', { event: 'update', schema: 'public', table: 'gruppeTabell', filter: `gruppeId=eq.${miGruppeId}` }, (data) => {
-        if (data.new.status === 'aktiv') {
-            maksFolk = data.new.maksFolk;
-            status('ferdigMedVenting');
-        }
-    })
-        .subscribe();
-}
-//___velg ord fane____________________________________________________________________________---
-for (let i = 0; i < 4; i++) {
-    let nyKnapp = document.createElement('button');
-    const valgtOrd = ord[Math.floor(Math.random() * ord.length)];
-    nyKnapp.innerText = valgtOrd;
-    nyKnapp.addEventListener('click', () => {
-        document.getElementById('teineOrd').innerText = valgtOrd;
-        lagreValgtOrd(valgtOrd);
-    });
-    document.getElementById('velgeOrd')?.appendChild(nyKnapp);
-}
-async function lagreValgtOrd(valgtOrd) {
-    const { data, error } = await supabase
-        .from('spelarTabell')
-        .update({ valgtOrd: valgtOrd })
-        .eq('spelarId', minSpelarId)
-        .select();
-    if (error) {
-        console.error('Feil ved lagring av ord:', error);
-    }
-    else {
-        status('startTeining');
-    }
-}
-//___gi blokknr til spelarar____________________________________________________________________________---
-async function giBlokkNrTilSpelarar() {
-    let blokknr = 0;
-    let maksFolk = 0;
-    const { data, error } = await supabase.from('spelarTabell').select('spelarId').eq('gruppe', miGruppeId);
-    if (error)
-        console.error(error);
-    else {
-        data.forEach((spelar) => {
-            // Gi blokk nummer til kvar spelar
-            supabase.from('spelarTabell').update({ blokk: blokknr }).eq('spelarId', minSpelarId);
-            blokknr++;
-        });
-    }
-    const { data: data2, error: error2 } = await supabase.from('gruppeTabell').update({ status: 'aktiv', maksFolk: maksFolk }).eq('gruppeId', miGruppeId);
-    if (error2)
-        console.error(error2);
-}
-//___tegn____________________________________________________________________________---
-function startTeineFane() {
-    const blyatntBredde = 4;
-    const viskBredde = 20;
-    const blyantFarge = 'black';
-    const bakgrunnFarge = '#fffff3';
-    const lerret = document.getElementById('tegneflate');
-    const ctx = lerret.getContext('2d');
-    ctx.lineWidth = blyatntBredde;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = blyantFarge;
-    let tegner = false;
-    lerret.addEventListener('mousedown', (e) => startTegning(e));
-    lerret.addEventListener('touchstart', (e) => startTegning(e.touches[0]));
-    lerret.width = lerret.getBoundingClientRect().width;
-    lerret.height = lerret.getBoundingClientRect().height;
-    function startTegning(e) {
-        tegner = true;
-        const rect = lerret.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-    }
-    lerret.addEventListener('mousemove', (e) => fortsettTegning(e));
-    lerret.addEventListener('touchmove', (e) => fortsettTegning(e.touches[0]));
-    function fortsettTegning(e) {
-        if (!tegner)
-            return;
-        const rect = lerret.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        ctx.lineTo(x, y);
-        ctx.stroke();
-    }
-    lerret.addEventListener('mouseup', () => stoppTegning());
-    lerret.addEventListener('mouseleave', () => stoppTegning());
-    lerret.addEventListener('touchend', () => stoppTegning());
-    lerret.addEventListener('touchcancel', () => stoppTegning());
-    function stoppTegning() {
-        tegner = false;
-    }
-    //____blyant visk knapp___
-    let tegnemodus = 'blyant';
-    document.getElementById('blyantViskKnapp')?.addEventListener('click', () => {
-        if (tegnemodus === 'blyant') {
-            tegnemodus = 'visk';
-            ctx.strokeStyle = bakgrunnFarge;
-            ctx.lineWidth = viskBredde;
-            document.getElementById('blyantViskKnapp').innerText = '🧹';
-        }
-        else {
-            tegnemodus = 'blyant';
-            ctx.strokeStyle = blyantFarge;
-            ctx.lineWidth = blyatntBredde;
-            document.getElementById('blyantViskKnapp').innerText = '✏️';
-        }
-    });
-    //___ferdig knapp____________________________________________________________________________---
-    document.getElementById('ferdigKnapp')?.addEventListener('click', () => lagreTegning());
-    async function lagreTegning() {
-        // Hent bilde frå canvas som Blob
-        const blob = await new Promise(resolve => lerret.toBlob(resolve, 'image/png'));
-        const filnavn = `Spelar_${minSpelarId}_Runde${rundeNr}.png`;
-        const { data, error } = await supabase.storage
-            .from('Bilder')
-            .upload(filnavn, blob, {
-            contentType: 'image/png',
-            upsert: false
-        });
-        if (error) {
-            console.error('Feil ved opplasting:', error.message);
-            console.log('Feil ved opplasting!');
-        }
-        else {
-            status('skalGjette');
-        }
+    else if (nyStatus === 'visFane') {
+        document.getElementById('gjetteFane').classList.add('usynlig');
+        document.getElementById('visFane').classList.remove('usynlig');
+        //startVis();
     }
 }
