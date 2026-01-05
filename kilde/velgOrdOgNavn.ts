@@ -1,6 +1,6 @@
 import { ord } from './ord.js';
-import { status, navnSetter, sideSetter} from './hoved.js';
-import { lagreSide, nesteSide } from './logikk.js';
+import { status, navnSetter} from './hoved.js';
+import { lagreSide, sideSetter } from './logikk.js';
 
 export function velgOrdOgNavn() {
   for (let i = 0; i < 4; i++) {
@@ -11,8 +11,7 @@ export function velgOrdOgNavn() {
     nyKnapp.disabled = true;
     nyKnapp.addEventListener('click', (knapp) => {
       document.getElementById('tegneOrd')!.innerText = (knapp.target as HTMLButtonElement).innerText;
-      lagreSide( valgtOrd,null );
-      sideSetter(1);
+      lagreSide( valgtOrd,null,0);
       status('venteTilStart');
     });
     document.getElementById('velgeOrd')?.appendChild(nyKnapp);

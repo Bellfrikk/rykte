@@ -1,6 +1,7 @@
 import { supabase } from "./supabaseData.js";
 import { lagreSide, nesteSide } from "./logikk.js";
 import { startNedtelling,stoppNedtelling } from "./nedtelling.js";
+import { status } from "./hoved.js";
   const blyatntBredde = 4;
   const viskBredde = 20;
   const blyantFarge = "black";
@@ -9,10 +10,7 @@ import { startNedtelling,stoppNedtelling } from "./nedtelling.js";
   const ctx = lerret.getContext("2d") as CanvasRenderingContext2D;
 
 export async function tegneOppsett() {
-
-
   document.getElementById("ferdigTegneKnapp")?.addEventListener("click", () => lagreTegning());
-
 
   let tegner = false;
 
@@ -87,6 +85,8 @@ export function startTegning() {
 
 
 export async function lagreTegning() {
+    stoppNedtelling();
+
     const lerret: HTMLCanvasElement = document.getElementById( "tegneflate" ) as HTMLCanvasElement;
   //Lagre bildet til Supabase Storage
   const blob = await new Promise((resolve) => lerret.toBlob(resolve, "image/png") );
@@ -99,15 +99,10 @@ export async function lagreTegning() {
   const { data: urlData } = await supabase.storage
     .from("Bilder")
     .getPublicUrl(filnavn);
-
-  const tegningUrl = urlData.publicUrl;
-  //Lagre url i spelarTabell
-
-  lagreSide(null, tegningUrl);
-  //stoppnedtellingTimer
-  stoppNedtelling();
+  const tegningUrl = urlData.publicUrl; //Lagre url i spelarTabell
+  await lagreSide(null, tegningUrl);
 
   nullstillLerret();
-  document.getElementById('tegneOrd')!.innerText = '⏳';
+  status('ventFane');
   nesteSide();
 }

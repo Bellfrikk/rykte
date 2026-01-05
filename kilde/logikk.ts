@@ -1,9 +1,11 @@
 import { supabase } from "./supabaseData.js";
-import { gjetteTidSetter, miGruppeId, minSpelarId,navn, naboSpelar,blokkNr, status, tegneTidSetter, antalSiderSetter, side, blokkNrSetter, sideSetter} from "./hoved.js";
-import { stengspelarOppdateringKanal } from "./venteFane.js";
+import { gjetteTidSetter, miGruppeId, minSpelarId,navn, naboSpelar,blokkNr, status, tegneTidSetter, antalSiderSetter, blokkNrSetter } from "./hoved.js";
+import { stengspelarOppdateringKanal } from "./startFane.js";
+let side:number = 1;
+let ventePaNabo:boolean = false;
+export function sideSetter(nr:number){ side = nr; }
 
 export async function logikk() {
-
 
   //hent gruppeinfo
   const { data, error } = await supabase
@@ -31,82 +33,81 @@ export async function logikk() {
           stengspelarOppdateringKanal();
           status('tegneFane');
           console.log('Gruppa har starta');
-          //følger med på om nabospelar har laga noko nytt, om du har komt til samme side som han så blir det lasta
-
-          const  hentTegningEllerOrd = supabase.channel('hentTegningEllerOrd')
-             .on('postgres_changes' ,
-               { event: 'INSERT', schema: 'public', table: 'rundeTabell', filter: `gruppeId=eq.${miGruppeId},spelarNr=eq.${naboSpelar}` },
-               (data: any) => {
-                 console.log('-------------------ny side tilgjengelig' + data.new);
-                 hentNesteTegningEllerOrd(data.new.side);
-               }
-             )
-           .subscribe();
         }
-
       }
     )
-    .subscribe();
-
-
+  .subscribe();
 }
-//hent det som nabo har lagra
-async function hentNesteTegningEllerOrd(nySide:number) {
-  console.log('======================ny tegning eller ord');
-  if(side === nySide) {
-    if(side % 2 === 0){//gjette ord runde
-        console.log('ny ord');
-    
-      const { data, error } = await supabase
-      .from('rundeTabell')
-      .select('gjettaOrd,blokk,side,spelarNr')
-      .eq('gruppeId', miGruppeId)
-      .eq('spelarNr', naboSpelar)
-      .eq('side', side)
-      .maybeSingle();
-      if( error ) console.error('Feil ved henting av ord:', error);
-      else if( data ) {
-        if(data.gjettaOrd !== null){
-          document.getElementById('tegneOrd')!.innerText = data.gjettaOrd;
-          console.log('Hentet ord: ' + data.gjettaOrd);
-          blokkNrSetter(data.blokk);
-          status('tegneFane');
-          sideSetter(side + 1);
-        }
-      }
-    }else{//tegne runde
-        console.log('ny tegning');
-    const { data, error } = await supabase
-      .from('rundeTabell')
-      .select('tegning,blokk,side,spelarNr')
-      .eq('gruppeId', miGruppeId)
-      .eq('spelarNr', naboSpelar)
-      .eq('side', side)
-      .maybeSingle();
-      if( error ) console.error('Feil ved henting av tegning:', error);
-      else if( data ) {
-        if(data.tegning !== null){
-          (document.getElementById('gjetteBilde') as HTMLImageElement).src = data.tegning;
-          blokkNrSetter(data.blokk);
-          console.log('Hentet tegning: ');
-          status('gjetteFane');
-          sideSetter(side + 1);
-        }
-      }
+
+export async function nesteSide() {
+  console.log('neste side kalla, side er no: ' + side); 
+  if(ventePaNabo){
+    let erNaboKlar = await hentNesteTegningEllerOrd();
+    if( erNaboKlar ) {
+      console.log('har henta ny side frå nabo');
+      side++;
+      ventePaNabo = false;
+      return;
+    }else{
+      console.log('nabo ikkje klar for ny side, ventar 1 sekund');
+      await vent(1000);
+      nesteSide();
     }
   }
 }
+//funksjon som venter tid seksund før den gir eit svar som kan awaites på
+function vent(tid: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, tid));
+}
+
+//hent det som nabo har lagra
+async function hentNesteTegningEllerOrd() {
+  const { data, error } = await supabase
+    .from('rundeTabell')
+    .select('gjettaOrd,tegning,blokk,side,spelarNr')
+    .eq('gruppeId', miGruppeId)
+    .eq('spelarNr', naboSpelar)
+    .eq('side', side)
+    .maybeSingle();
+    console.log('hentNesteTegningEllerOrd data:', data, ' error:', error);
+  if( error ) console.error('Feil ved henting av ord eller tegning:', error);
+  else if( data ) {
+    if(data.gjettaOrd !== null){
+      aktiverTegning(data.gjettaOrd, data.blokk);
+    }else if(data.tegning !== null){
+      aktiverGjetting(data.tegning, data.blokk);
+    }
+    return true;
+  }else{
+    return false; 
+  }
+}
+
+function aktiverTegning(ord:string, blokk:number) {
+  document.getElementById('tegneOrd')!.innerText = ord;
+  blokkNrSetter(blokk);
+  status('tegneFane');
+}
+
+async function aktiverGjetting(teikningUrl:string, blokk:number) {
+  (document.getElementById('gjetteBilde') as HTMLImageElement).src = teikningUrl;
+  blokkNrSetter(blokk);
+  console.log('Hentet tegning: ');
+  status('gjetteFane');
+}
 
 
-export async function lagreSide(ord:string|null, tegning:string|null) {
+export async function lagreSide(ord:string|null, tegning:string|null, denneSide:number = side) {
   const { error } = await supabase
     .from('rundeTabell')
-    .insert({'gruppeId':miGruppeId, 'gjettaOrd': ord, 'tegning':tegning, 'spelarNr': minSpelarId, 'spelarNavn': navn ,'side': side, 'blokk': blokkNr})
-    if(error) console.error('feil ved lagre side, feil: ' + error);
-    else console.log('lagra side ' + side);
+    .insert({'gruppeId':miGruppeId, 'gjettaOrd': ord, 'tegning':tegning, 'spelarNr': minSpelarId, 'spelarNavn': navn ,'side': denneSide, 'blokk': blokkNr})
+  if(error) {
+    console.error('feil ved lagre side, feil: ' + error);
+    return false;
+  }else{ 
+    console.log('lagra side ' + denneSide);
+    ventePaNabo = true;
+    return true;
+  }
 }
 
-export function nesteSide() {
-
-  hentNesteTegningEllerOrd(side);
-}

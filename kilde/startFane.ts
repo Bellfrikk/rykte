@@ -3,14 +3,14 @@ import { miGruppeId } from './hoved.js';
 let spelarOppdateringKanal:any;
 
 
-export async function venteFaneOppsett (){
+export async function startFaneOppsett (){
 
 //hent alle spelarane i gruppa og vis på venteskjermen
 const { data, error } = await supabase
   .from('rundeTabell')
   .select('spelarNavn')
   .eq('gruppeId', miGruppeId) as { data: { spelarNavn: string}[] | null, error: any };
-  if (error){ console.log('feil ved henting av spelarar i ventefane: ')
+  if (error){ console.log('feil ved henting av spelarar i startFane: ')
      console.error(error); }
   else if (data) {
     console.log(data);
