@@ -2,7 +2,7 @@ import { supabase } from './supabaseData.js';
 import { miGruppeId, naboSpelarSetter } from './hoved.js';
 
 export async function startGruppa() { 
- 
+ console.log('startGruppa kalla');
   //Sett gruppestatus til aktiv og hent nabospelar til førstemann
 
   const { data,error } = await supabase

@@ -1,8 +1,12 @@
-import { stoppNedtelling } from "./nedtelling.js";
+import { startNedtelling, stoppNedtelling } from "./nedtelling.js";
 import { lagreSide, nesteSide } from "./logikk.js";
 import { status } from "./hoved.js";
 export function gjetteOppsett() {
     document.getElementById('ferdigGjettaKnapp')?.addEventListener('click', () => lagreGjettaOrd());
+}
+//_________Start gjetting
+export function startGjetting() {
+    startNedtelling('gjetting');
 }
 export async function lagreGjettaOrd() {
     const gjettaOrdInput = document.getElementById('gjettaOrdFelt');

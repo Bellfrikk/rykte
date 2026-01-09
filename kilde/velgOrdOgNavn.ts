@@ -11,7 +11,7 @@ export function velgOrdOgNavn() {
     nyKnapp.disabled = true;
     nyKnapp.addEventListener('click', (knapp) => {
       document.getElementById('tegneOrd')!.innerText = (knapp.target as HTMLButtonElement).innerText;
-      lagreSide( valgtOrd,null,0);
+      lagreSide( valgtOrd,null,99 ); //lagre side 99 for å markere Uferdig
       status('venteTilStart');
     });
     document.getElementById('velgeOrd')?.appendChild(nyKnapp);

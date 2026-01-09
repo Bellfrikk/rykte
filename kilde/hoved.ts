@@ -4,8 +4,9 @@ import { velgGruppeOppsett } from './gruppe.js';
 import { lagGruppeOppsett } from './lagGruppe.js';
 import { startFaneOppsett } from './startFane.js';
 import { tegneOppsett, startTegning } from './tegning.js';
-import { gjetteOppsett } from './gjettOrd.js';
+import { startGjetting, gjetteOppsett } from './gjettOrd.js';
 import { logikk } from './logikk.js';
+import { startVis } from './vis.js';
 
 export let miGruppeId:number;
 export function gruppeIdSetter(nyId:number){ miGruppeId = nyId; console.log('min gruppeId er satt til '+ miGruppeId);   }
@@ -61,6 +62,7 @@ export function status(nyStatus:'velgGruppe' | 'velgOrd'| 'lagGruppe'|'venteTilS
   }else if(nyStatus === 'gjetteFane'){
     document.getElementById('ventFane')!.classList.add('usynlig');
     document.getElementById('gjetteFane')!.classList.remove('usynlig');
+    startGjetting();
 
   }else if(nyStatus === 'ventFane'){
     document.getElementById('tegneFane')!.classList.add('usynlig');
@@ -69,7 +71,8 @@ export function status(nyStatus:'velgGruppe' | 'velgOrd'| 'lagGruppe'|'venteTilS
 
   }else if(nyStatus === 'visFane'){
     document.getElementById('gjetteFane')!.classList.add('usynlig');
+    document.getElementById('ventFane')!.classList.add('usynlig');
     document.getElementById('visFane')!.classList.remove('usynlig');
-    //startVis();
+    startVis();
   }
 }
