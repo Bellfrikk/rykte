@@ -14,6 +14,7 @@ export async function lagreGjettaOrd() {
     stoppNedtelling();
     await lagreSide(gjettaOrd, null);
     gjettaOrdInput.value = '';
+    document.getElementById('gjetteForfattar').innerText = '';
     status('ventFane');
     nesteSide();
 }

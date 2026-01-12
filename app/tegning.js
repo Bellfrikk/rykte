@@ -92,6 +92,7 @@ export async function lagreTegning() {
     const tegningUrl = urlData.publicUrl; //Lagre url i spelarTabell
     await lagreSide(null, tegningUrl);
     nullstillLerret();
+    document.getElementById('tegneForfattar').innerText = '';
     status('ventFane');
     nesteSide();
 }

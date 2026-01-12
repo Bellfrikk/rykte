@@ -71,4 +71,8 @@ export function status(nyStatus) {
         document.getElementById('visFane').classList.remove('usynlig');
         startVis();
     }
+    else if (nyStatus === 'ferdig') {
+        document.getElementById('visFane').classList.add('usynlig');
+        document.getElementById('ferdigFane').classList.remove('usynlig');
+    }
 }

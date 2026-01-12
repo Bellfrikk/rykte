@@ -103,6 +103,7 @@ export async function lagreTegning() {
   await lagreSide(null, tegningUrl);
 
   nullstillLerret();
+  document.getElementById('tegneForfattar')!.innerText = '';
   status('ventFane');
   nesteSide();
 }

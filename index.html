@@ -42,7 +42,7 @@
         <option value="120">Gjette-tid: 120 Sekund</option>
       </select>
       <select id="antalSider" name="antalSider" required placeholder="Antal rundar:">
-        <option value="5">Antal rundar: 2 </option>
+        <option value="3">Antal rundar: 2 </option>
         <option value="7">Antal rundar: 3 </option>
         <option value="9">Antal rundar: 4 </option>
         <option value="11">Antal rundar: 5 </option>
@@ -74,9 +74,9 @@
     <!-- Teine Fane-->
     <div id="tegneFane" class=" fane usynlig">
       <div class="infoLinje">
-        <div id="nedtellingTegning">000</div>
+        <div id="tegneForfattar">K</div>
         <div id="tegneOrd">---</div>
-        <div id="ferdigTegneKnapp">⏭</div>
+        <div id="ferdigTegneKnapp"><span id="nedtellingTegning">00</span> >></div>
       </div>
       <canvas id="tegneflate"></canvas>
       <div id="blyantViskKnapp">✏</div>
@@ -84,23 +84,30 @@
     <!-- Gjette Fane-->
     <div id="gjetteFane" class="fane usynlig">
       <div class="infoLinje">
-        <div id="nedtellingGjetting">000</div>
+        <div id="gjetteForfattar">K</div>
         <div><form id="gjettOrdForm"></form><input type="text" id="gjettaOrdFelt" name="Gjetta ord" placeholder="Skriv det du trur det er.." required></form></div>
-        <div id="ferdigGjettaKnapp">⏭</div>
+        <div id="ferdigGjettaKnapp"><span id="nedtellingGjetting">00</span> >></div>
       </div>
       <img id="gjetteBilde" alt="Vent på bilde">
     </div>
             <!-- Vent Fane-->
     <div id="ventFane" class="fane usynlig">
       <p>Vent...</p>
+      <button class="usynlig" type="button" id="hoppOverNaboKnapp">Hopp over nabo?</button>
     </div>
         <!-- Vis Fane-->
     <div id="visFane" class="fane usynlig">
       <div class="infoLinje">
+        <div id="visForfattar">K</div>
         <div id="visOrd"></div>
-        <div id="nesteVisKnapp" class="usynlig">⏭</div>
+        <div id="nesteVisKnapp" class="usynlig">>></div>
       </div>
       <img id="visTegning">
+    </div>
+            <!-- Ferdig Fane-->
+    <div id="ferdigFane" class="fane usynlig">
+      <h1>Spillet er ferdig.</h1>
+      <p>Kjetil vant</p>
     </div>
   </body>
   <script type="module" src="./app/hoved.js"></script>

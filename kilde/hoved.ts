@@ -27,7 +27,7 @@ export function blokkNrSetter(nyNr:number){ blokkNr = nyNr; console.log('min blo
 
 status('velgGruppe');
 
-export function status(nyStatus:'velgGruppe' | 'velgOrd'| 'lagGruppe'|'venteTilStart'|'tegneFane'|'gjetteFane'|'ventFane'|'visFane'){
+export function status(nyStatus:'velgGruppe' | 'velgOrd'| 'lagGruppe'|'venteTilStart'|'tegneFane'|'gjetteFane'|'ventFane'|'visFane'|'ferdig'){
    
   if(nyStatus === 'velgGruppe'){
     document.getElementById('gruppeFane')!.classList.remove('usynlig');
@@ -74,5 +74,8 @@ export function status(nyStatus:'velgGruppe' | 'velgOrd'| 'lagGruppe'|'venteTilS
     document.getElementById('ventFane')!.classList.add('usynlig');
     document.getElementById('visFane')!.classList.remove('usynlig');
     startVis();
+  }else if(nyStatus === 'ferdig'){
+    document.getElementById('visFane')!.classList.add('usynlig');
+    document.getElementById('ferdigFane')!.classList.remove('usynlig');
   }
 }

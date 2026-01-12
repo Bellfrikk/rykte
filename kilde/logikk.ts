@@ -1,14 +1,13 @@
 import { supabase } from "./supabaseData.js";
-import { gjetteTidSetter, miGruppeId, minSpelarId,navn, naboSpelar,blokkNr, status, tegneTidSetter, antalSider, antalSiderSetter, blokkNrSetter } from "./hoved.js";
+import { gjetteTidSetter, miGruppeId, minSpelarId, navn, naboSpelar, blokkNr, status, tegneTidSetter, antalSider, antalSiderSetter, blokkNrSetter, naboSpelarSetter } from "./hoved.js";
 import { stengspelarOppdateringKanal } from "./startFane.js";
-import { aktiverVisKnapp } from "./vis.js";
+import { aktiverVisKnapp,endreVisSpelar } from "./vis.js";
 
 let side:number = 1;
 let ventePaNabo:boolean = false;
 export function sideSetter(nr:number){ side = nr; }
 
 export async function logikk() {
-
   //hent gruppeinfo
   const { data, error } = await supabase
     .from('gruppeTabell')
@@ -36,6 +35,8 @@ export async function logikk() {
           status('tegneFane');
           console.log('Gruppa har starta');
         }else if(data.new.status === 'ny'){
+        }else if(data.new.status === 'ferdig'){
+          status('ferdig');
         }else {
           status('visFane');
           console.log('visningsmodus: ' + data.new.status);
@@ -44,8 +45,11 @@ export async function logikk() {
       }
     )
   .subscribe();
+
+  document.getElementById('hoppOverNaboKnapp')!.addEventListener('click', async ()=>{ byttNabo() }, true );
 }
 
+let venteNaboTid = 0;
 export async function nesteSide() {
   if( side >= antalSider ) {
     endreStatusTilVis();
@@ -62,11 +66,15 @@ export async function nesteSide() {
     }else{
       console.log('nabo ikkje klar for ny side, ventar 1 sekund');
       await vent(1000);
+      venteNaboTid++;
+      if( venteNaboTid >= 20 ) {
+        document.getElementById('hoppOverNaboKnapp')!.classList.remove('usynlig');
+      }
       nesteSide();
     }
   }
 }
-//funksjon som venter tid seksund før den gir eit svar som kan awaites på
+//funksjon som venter tid mlliseksund før den gir eit svar som kan awaites på
 function vent(tid: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, tid));
 }
@@ -75,7 +83,7 @@ function vent(tid: number): Promise<void> {
 async function hentNesteTegningEllerOrd() {
   const { data, error } = await supabase
     .from('rundeTabell')
-    .select('gjettaOrd,tegning,blokk,side,spelarNr')
+    .select('gjettaOrd,tegning,blokk,spelarNavn')
     .eq('gruppeId', miGruppeId)
     .eq('spelarNr', naboSpelar)
     .eq('side', side)
@@ -84,9 +92,9 @@ async function hentNesteTegningEllerOrd() {
   if( error ) console.error('Feil ved henting av ord eller tegning:', error);
   else if( data ) {
     if(data.gjettaOrd !== null){
-      aktiverTegning(data.gjettaOrd, data.blokk);
+      aktiverTegning(data.gjettaOrd, data.blokk, data.spelarNavn);
     }else if(data.tegning !== null){
-      aktiverGjetting(data.tegning, data.blokk);
+      aktiverGjetting(data.tegning, data.blokk, data.spelarNavn);
     }
     return true;
   }else{
@@ -94,20 +102,22 @@ async function hentNesteTegningEllerOrd() {
   }
 }
 
-function aktiverTegning(ord:string, blokk:number) {
+function aktiverTegning(ord:string, blokk:number, spelarNavn:string) {
   document.getElementById('tegneOrd')!.innerText = ord;
+  document.getElementById('tegneForfattar')!.innerText = spelarNavn;
   blokkNrSetter(blokk);
   status('tegneFane');
 }
 
-async function aktiverGjetting(teikningUrl:string, blokk:number) {
+async function aktiverGjetting(teikningUrl:string, blokk:number, spelarNavn:string) {
   (document.getElementById('gjetteBilde') as HTMLImageElement).src = teikningUrl;
+  document.getElementById('gjetteForfattar')!.innerText = spelarNavn;
   blokkNrSetter(blokk);
   console.log('Hentet tegning: ');
   status('gjetteFane');
 }
 
-
+//----- Lagre sider
 export async function lagreSide(ord:string|null, tegning:string|null, denneSide:number = side) {
   const { error } = await supabase
     .from('rundeTabell')
@@ -121,6 +131,31 @@ export async function lagreSide(ord:string|null, tegning:string|null, denneSide:
     return true;
   }
 }
+//håndtering av folk som dett ut av spelet
+  async function byttNabo() {
+        console.log('hopp over nabo knapp trykka');
+    if(naboSpelar !== 1){
+      naboSpelarSetter( naboSpelar - 1 );
+    }else{
+      const { data, error } = await supabase
+          .from('gruppeTabell')
+          .select('nesteSpelarNr')
+          .eq('gruppeId', miGruppeId)
+          .single();
+      if( error ) console.log('Feil ved henting av ny naboSpelarNr:', error);
+      else if( data ) {
+        console.log('Ny naboSpelarNr hentet:', data.nesteSpelarNr);
+        naboSpelarSetter( data.nesteSpelarNr );
+      }
+    }
+    document.getElementById('hoppOverNaboKnapp')!.classList.add('usynlig');
+    nesteSide();
+  }
+
+
+
+//------- overgang til VIS
+
 
 async function endreStatusTilVis() {
     console.log('gå til visnings modus');
@@ -133,6 +168,7 @@ async function endreStatusTilVis() {
       .eq('side', 99);
     if( errorOppdater ) console.error('Feil ved oppdatering av min status til ferdig:', errorOppdater);
   console.log('edra side 9 til 0, spelar::' + minSpelarId);
+
     //hent alle spelarar som ennå har side 99/uferdige 
     const { data, error } = await supabase
       .from('rundeTabell')
@@ -140,6 +176,7 @@ async function endreStatusTilVis() {
       .eq('gruppeId', miGruppeId)
       .eq('side', 99);
     if( error ) console.error('Feil ved sjekk om alle er ferdig:', error);
+
     //endre gruppe status visst du er sist
     else if( data && data.length === 0 ) {
       console.log('Alle er ferdige');
@@ -150,31 +187,5 @@ async function endreStatusTilVis() {
     status('visFane');
   }
 
-  export async function endreVisSpelar(spelarNr:Number) {
-    //sjekk om det finnst fleire spelarar å vise
-    const {data, error:feil} = await supabase
-      .from('rundeTabell')
-      .select('vis')
-      .eq('gruppeId', miGruppeId)
-      .eq('spelarNr', spelarNr)
-      .eq('side',0)
 
-      if( feil ) {
-      console.error('Feil ved sjekk om neste spelar finnst:', feil);
-      alert('Spel er ferdig');
-      return;
-      
-      }else if(data.length === 0){
-        console.log('Ingen fleire spelarar å vise, spel er ferdig');
-        alert('Spel er ferdig');
-       return;
-      }
-    //endre gruppe status til neste spelarNr
-    const { error } = await supabase
-        .from('gruppeTabell')
-        .update({status: spelarNr})
-        .eq('gruppeId', miGruppeId);
-      if( error ) console.error('Feil ved oppdatering av gruppestatus', error);
-      else  console.log('endra gruppestatus til' + spelarNr);
 
-  }
