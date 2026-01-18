@@ -11,19 +11,20 @@ async function lagGruppe() {
     //Lagre data om gruppa i databasen
     const gruppeNavnInput = document.getElementById('gruppeNavn');
     const gruppeNavn = gruppeNavnInput.value.trim();
-    const tegneTid1 = document.getElementById('tegneTidInput');
+    const tegneTid1 = document.getElementById('tegneTidSkyvebryter');
     let tegneTid2 = parseInt(tegneTid1.value);
-    let tegneTid3 = tegneTid2 === 0 ? null : tegneTid2;
+    let tegneTid3 = tegneTid2 === 120 ? null : tegneTid2;
     console.log('tegnetid: ' + tegneTid3);
-    const gjetteTid1 = document.getElementById('gjetteTidInput');
+    const gjetteTid1 = document.getElementById('gjetteTidSkyvebryter');
     let gjetteTid2 = parseInt(gjetteTid1.value);
-    let gjetteTid3 = gjetteTid2 === 0 ? null : gjetteTid2;
+    let gjetteTid3 = gjetteTid2 === 120 ? null : gjetteTid2;
     console.log('gjettetid: ' + gjetteTid3);
-    const antalSiderInput = document.getElementById('antalSider');
-    let antalSider = parseInt(antalSiderInput.value);
+    const antalSiderInput = document.getElementById('antalRundarSkyvebryter');
+    let antalSider1 = parseInt(antalSiderInput.value);
+    let antalSider2 = antalSider1 * 2 + 1;
     const { data, error } = await supabase
         .from('gruppeTabell')
-        .insert([{ navn: gruppeNavn, nesteSpelarNr: 2, gjetteTid: gjetteTid3, tegneTid: tegneTid3, antalSider: antalSider, status: 'ny' }])
+        .insert([{ navn: gruppeNavn, nesteSpelarNr: 2, gjetteTid: gjetteTid3, tegneTid: tegneTid3, antalSider: antalSider2, status: 'ny' }])
         .select('gruppeId')
         .single();
     if (error)
@@ -34,6 +35,6 @@ async function lagGruppe() {
     blokkNrSetter(1);
     tegneTidSetter(tegneTid3);
     gjetteTidSetter(gjetteTid3);
-    antalSiderSetter(antalSider);
+    antalSiderSetter(antalSider2);
     status('velgOrd');
 }

@@ -7,6 +7,8 @@ import { tegneOppsett, startTegning } from './tegning.js';
 import { startGjetting, gjetteOppsett } from './gjettOrd.js';
 import { logikk } from './logikk.js';
 import { startVis } from './vis.js';
+import { oppdaterFarger } from './styling.js';
+import { stylingOppsett } from './styling.js';
 
 export let miGruppeId:number;
 export function gruppeIdSetter(nyId:number){ miGruppeId = nyId; console.log('min gruppeId er satt til '+ miGruppeId);   }
@@ -23,8 +25,9 @@ export function gjetteTidSetter(nyTid:number|null){ gjetteTid = nyTid;console.lo
 export let antalSider:number;
 export function antalSiderSetter(nyNr:number){ antalSider = nyNr; console.log('min antalSider er satt til '+ antalSider); }
 export let blokkNr:number;
-export function blokkNrSetter(nyNr:number){ blokkNr = nyNr; console.log('min blokkNr er satt til '+ blokkNr); }
+export function blokkNrSetter(nyNr:number){ blokkNr = nyNr; oppdaterFarger(blokkNr); console.log('min blokkNr er satt til '+ blokkNr); }
 
+stylingOppsett();
 status('velgGruppe');
 
 export function status(nyStatus:'velgGruppe' | 'velgOrd'| 'lagGruppe'|'venteTilStart'|'tegneFane'|'gjetteFane'|'ventFane'|'visFane'|'ferdig'){

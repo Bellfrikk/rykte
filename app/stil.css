@@ -1,126 +1,230 @@
+:root {
+  /* Base / bakgrunn */
+  --bg-main: #1f2228;
+  --bg-soft: #262b33;
+  --panel-bg: #2c313a;
+  --text-main: #f4f6fb;
+  --text-muted: #b5bcc8;
+  --accent-base: #6ee7b7;
+  --blokkFarge: var(--accent-base);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  background-color: #1e1e1e; /* mørk, rolig bakgrunn */
-  color: #f0f0f0;
-  font-family: 'Segoe UI', sans-serif;
-  font-size: clamp(2rem, 5vw, 3rem);
+  background: radial-gradient(circle at top, var(--bg-soft), var(--bg-main));
+  color: var(--text-main);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: clamp(1.8rem, 4.5vw, 3rem);
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  height: 100vh;
-  margin: 0;
-  overflow:hidden;
 }
+
 h1 {
-  margin: 20px 0 10px 0;
-  font-size: clamp(2.5rem, 6vw, 4rem);
+  margin: 16px 0 8px;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  letter-spacing: 0.03em;
 }
-.fane{
-  position:absolute;
-  top:0px;
-  height:100dvh;
-  width: min(98%, 600px);
+
+.fane {
+  position: absolute;
+  top: 0;
+
+  width: min(96%, 620px);
+  height: 100dvh;
+
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding: 10px;
-  border-radius: 12px;
-  box-sizing: border-box;
+  gap: 16px;
+
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--panel-bg) 90%, white),
+    var(--panel-bg)
+  );
+
+  border-radius: 20px;
+
+  border: 3px solid color-mix(in srgb, var(--blokkFarge) 65%, transparent);
+
+ 
+  transition:
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+
   overflow: hidden;
 }
 
 label {
-  font-size: 1rem;
-  color: #ccc;
-}
-
-input, select{
-  width: 100%;
-  padding: 12px 15px;
-  margin-bottom: clamp(20px, 5vh, 100px);
-  background-color: #3a3a3a;
-  color: #f0f0f0;
-  border: none;
-  border-radius: 40px;
-  outline: none;
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  box-sizing: border-box;
+  color: var(--text-muted);
+  font-size: clamp(1.2rem, 4vw, 2rem);
   text-align: center;
 }
 
-input:focus, select:focus{
-  background-color: #444;
+input,
+select {
+  width: 100%;
+  padding: 12px 18px;
+
+  background: #afb0b2;
+  color: #111827;
+
+  border-radius: 999px;
+  border: 2px solid transparent;
+
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  text-align: center;
+
+  outline: none;
+  transition: all 0.2s ease;
 }
 
-.fane button {
-  margin-top: 10px;
-  padding: 12px;
-  width:100%;
-  background-color: #3a3a3a;
-  color: #f0f0f0;
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  border: none;
-  border-radius: 40px;
+input::placeholder {
+  color: #9aa3b2;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--blokkFarge);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--blokkFarge) 30%, transparent);
+}
+input[type="range"] {
+  width: 100%;
+  appearance: none;
+  height: 1px;
+  border-radius: 999px;
+  background: --blokkfarge;
+  outline: none;
+  padding:0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 80%;
+  background: var(--accent-base);
+  border: 3px solid var(--blokfarge);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
   cursor: pointer;
-  transition: background 0.2s ease;
 }
 
-.usynlig {
-  display: none;
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 80%;
+  background: var(--accent-base);
+  border: 3px solid var(--blokfarge);
+  cursor: pointer;
+}
+.fane button {
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0 0;
+
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  font-weight: 600;
+
+  border: none;
+  border-radius: 999px;
+
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--blokkFarge) 85%, white),
+    var(--blokkFarge)
+  );
+
+  color: #064e3b;
+  cursor: pointer;
+
+
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
 }
 
-/* Hide scrollbar for WebKit-based browsers */
-.fane::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  display: none;
+.fane button:hover {
+  transform: translateY(-1px);
+}
+
+.fane button:active {
+  transform: translateY(0);
+}
+
+.infoLinje {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#nedtelling {
+  font-weight: 700;
+  color: var(--blokkFarge);
+}
+
+#teineOrd {
+  font-weight: 700;
+  text-align: center;
+  flex-grow: 1;
 }
 
 #grupper {
   display: flex;
   flex-direction: column-reverse;
-  gap: 10px;
+  gap: 12px;
   overflow-y: auto;
 }
-#tegneFane{
+
+#tegneFane {
   height: 100%;
 }
-.infoLinje {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin:0;
+
+#tegneflate {
+  width: 100%;
+  height: 100%;
+
+  border-radius: 16px;
+  background: #fffef6;
+
+  border: 3px solid color-mix(in srgb, var(--blokkFarge) 40%, #e5e7eb);
+  box-shadow: inset 0 0 0 1px #d1d5db;
+
+  touch-action: none;
 }
-#nedtelling {
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  font-weight: bold;
+
+#gjetteBilde {
+  width: 100%;
+  height: 100%;
+
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
-#teineOrd {
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  font-weight: bold;
-  text-align: center;
-  flex-grow: 1;
-}
+
 #blyantViskKnapp {
   position: absolute;
   bottom: 20px;
   right: 20px;
-  width: 60px;
-  height: 60px;
+
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  align-content: center;
+
+  background: var(--blokkFarge);
+  color: #064e3b;
+
+  display: grid;
+  place-items: center;
+
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--blokkFarge) 40%, transparent);
 }
-#tegneflate {
-  width: 100%;
-  height: 100%;
-  border: 2px solid #555;
-  border-radius: 12px;
-  touch-action: none; /* Bedre å tegne */
-  background-color: #fffff3;
-}
-#gjetteBilde {
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-  touch-action: none; /* Bedre å tegne */
+
+.usynlig {
+  display: none;
 }

@@ -73,9 +73,10 @@ async function hentGruppeInfo(nyGruppeId) {
 }
 async function oppdaterSpelarNr(gruppe, spelarNr) {
     //Oppdater info i gruppe
-    const { data, error } = await supabase
+    const nesteSpelarNr = spelarNr + 1;
+    const { error } = await supabase
         .from('gruppeTabell')
-        .update({ nesteSpelarNr: spelarNr++, })
+        .update({ nesteSpelarNr: nesteSpelarNr, })
         .eq('gruppeId', gruppe);
     if (error) {
         console.error('feil ved oppdatering av gruppeinfo: ' + error);

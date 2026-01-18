@@ -14,5 +14,5 @@ export async function startGruppa() {
   if (error) {
     console.error('feil ved setting av  status til aktiv ');
     console.log(error) ;
-  }else if (data) naboSpelarSetter( data.nesteSpelarNr )
+  }else if (data) naboSpelarSetter( data.nesteSpelarNr-1 )
 }

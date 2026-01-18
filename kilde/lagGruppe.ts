@@ -13,22 +13,23 @@ async function lagGruppe() {
   //Lagre data om gruppa i databasen
   const gruppeNavnInput = document.getElementById('gruppeNavn') as HTMLInputElement;
   const gruppeNavn:string = gruppeNavnInput.value.trim();
-  const tegneTid1 = document.getElementById('tegneTidInput') as HTMLSelectElement;
+  const tegneTid1 = document.getElementById('tegneTidSkyvebryter') as HTMLSelectElement;
   let tegneTid2:number = parseInt(tegneTid1.value);
-  let tegneTid3:number|null = tegneTid2 === 0 ? null : tegneTid2;
+  let tegneTid3:number|null = tegneTid2 === 120 ? null : tegneTid2;
   console.log('tegnetid: ' + tegneTid3);
 
-  const gjetteTid1 = document.getElementById('gjetteTidInput') as HTMLSelectElement;
+  const gjetteTid1 = document.getElementById('gjetteTidSkyvebryter') as HTMLSelectElement;
   let gjetteTid2:number = parseInt(gjetteTid1.value);
-  let gjetteTid3:number|null = gjetteTid2 === 0 ? null : gjetteTid2;
+  let gjetteTid3:number|null = gjetteTid2 === 120 ? null : gjetteTid2;
   console.log('gjettetid: ' + gjetteTid3);
 
-  const antalSiderInput = document.getElementById('antalSider') as HTMLInputElement;
-  let antalSider:number = parseInt(antalSiderInput.value);
+  const antalSiderInput = document.getElementById('antalRundarSkyvebryter') as HTMLInputElement;
+  let antalSider1:number = parseInt(antalSiderInput.value);
+  let antalSider2:number = antalSider1 * 2 + 1;
   
   const { data, error } = await supabase
     .from('gruppeTabell')
-    .insert([{navn: gruppeNavn, nesteSpelarNr: 2, gjetteTid:gjetteTid3, tegneTid:tegneTid3, antalSider:antalSider, status:'ny'}])
+    .insert([{navn: gruppeNavn, nesteSpelarNr: 2, gjetteTid:gjetteTid3, tegneTid:tegneTid3, antalSider:antalSider2, status:'ny'}])
     .select('gruppeId')
     .single();
     if (error) console.error('Gruppe lagre feil:', error);
@@ -39,6 +40,6 @@ async function lagGruppe() {
     blokkNrSetter( 1);
     tegneTidSetter( tegneTid3 );
     gjetteTidSetter( gjetteTid3 );
-    antalSiderSetter( antalSider);
+    antalSiderSetter( antalSider2);
     status('velgOrd');
 }

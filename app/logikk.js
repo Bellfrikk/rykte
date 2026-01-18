@@ -2,6 +2,8 @@ import { supabase } from "./supabaseData.js";
 import { gjetteTidSetter, miGruppeId, minSpelarId, navn, naboSpelar, blokkNr, status, tegneTidSetter, antalSider, antalSiderSetter, blokkNrSetter, naboSpelarSetter } from "./hoved.js";
 import { stengspelarOppdateringKanal } from "./startFane.js";
 import { aktiverVisKnapp, endreVisSpelar } from "./vis.js";
+import { nullstillLerret } from "./tegning.js";
+import { oppdaterFarger } from "./styling.js";
 let side = 1;
 let ventePaNabo = false;
 export function sideSetter(nr) { side = nr; }
@@ -38,6 +40,8 @@ export async function logikk() {
         else {
             status('visFane');
             console.log('visningsmodus: ' + data.new.status);
+            nullstillLerret();
+            oppdaterFarger(Number(data.new.status));
             aktiverVisKnapp(Number(data.new.status));
         }
     })

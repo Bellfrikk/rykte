@@ -59,7 +59,7 @@ export async function tegneOppsett() {
         }
     });
 }
-function nullstillLerret() {
+export function nullstillLerret() {
     const lerret = document.getElementById("tegneflate");
     lerret.width = lerret.getBoundingClientRect().width;
     lerret.height = lerret.getBoundingClientRect().height;

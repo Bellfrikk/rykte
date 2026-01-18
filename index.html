@@ -17,41 +17,18 @@
     </div>
     <!-- Ny Gruppe Fane-->
     <div class="fane usynlig" id="nyGruppeFane">
-      <h1>Rykte går!</h1>
-    Lag ny gruppe.
     <form id="nyGruppeForm">
-      <input type="text" id="gruppeNavn" name="gruppeNavn" required placeholder="Gruppenavn">
-      <select id="tegneTidInput" name="Tegne Tid" required placeholder="Tegnetid:">
-        <option value="0">Tegne-tid: Ingen grense</option>
-        <option value="10">Tegne-tid: 10 Sekund</option>
-        <option value="20">Tegne-tid: 20 Sekund</option>
-        <option value="30">Tegne-tid: 30 Sekund</option>
-        <option value="45">Tegne-tid: 45 Sekund</option>
-        <option value="60">Tegne-tid: 60 Sekund</option>
-        <option value="90">Tegne-tid: 90 Sekund</option>
-        <option value="120">Tegne-tid: 120 Sekund</option>
-      </select>
-      <select id="gjetteTidInput" name="Gjette Tid" required placeholder="Gjettetid:">
-        <option value="0">Gjette-tid: Ingen grense</option>
-        <option value="10">Gjette-tid: 10 Sekund</option>
-        <option value="20">Gjette-tid: 20 Sekund</option>
-        <option value="30">Gjette-tid: 30 Sekund</option>
-        <option value="45">Gjette-tid: 45 Sekund</option>
-        <option value="60">Gjette-tid: 60 Sekund</option>
-        <option value="90">Gjette-tid: 90 Sekund</option>
-        <option value="120">Gjette-tid: 120 Sekund</option>
-      </select>
-      <select id="antalSider" name="antalSider" required placeholder="Antal rundar:">
-        <option value="3">Antal rundar: 2 </option>
-        <option value="7">Antal rundar: 3 </option>
-        <option value="9">Antal rundar: 4 </option>
-        <option value="11">Antal rundar: 5 </option>
-        <option value="13">Antal rundar: 6 </option>
-        <option value="15">Antal rundar: 7 </option>
-        <option value="17">Antal rundar: 8 </option>
-        <option value="19">Antal rundar: 9 </option>
-        <option value="21">Antal rundar: 10</option>
-      </select>
+      <label for="gruppeNavn">Gruppenavn: </label>
+      <input type="text" id="gruppeNavn" name="gruppeNavn" required>
+      <label for="tegneTidSkyvebryter"> Tegne tid: <strong><span id="tegneTidSkyvebryterTekst">Evig</span></strong></label>
+      <input type="range" id="tegneTidSkyvebryter" min="10" max="120" step="10" value="120" />
+      <br>
+      <label for="gjetteTidSkyvebryter"> Gjette tid: <strong><span id="gjetteTidSkyvebryterTekst">Evig</span></strong></label>
+      <input type="range" id="gjetteTidSkyvebryter" min="10" max="120" step="10" value="120" />
+      <br>
+      <label for="antalRundarSkyvebryter"> Antal rundar: <strong><span id="antalRundarSkyvebryterTekst">2</span></strong></label>
+      <input type="range" id="antalRundarSkyvebryter" min="2" max="10" step="1" value="2" />
+      <br><br>
       <button type="button" id="lagreGruppeKnapp">Opprett gruppe</button>
     </form>
     </div>

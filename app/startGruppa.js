@@ -14,5 +14,5 @@ export async function startGruppa() {
         console.log(error);
     }
     else if (data)
-        naboSpelarSetter(data.nesteSpelarNr);
+        naboSpelarSetter(data.nesteSpelarNr - 1);
 }

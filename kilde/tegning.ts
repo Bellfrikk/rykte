@@ -65,7 +65,7 @@ export async function tegneOppsett() {
   });
 }
 
-function nullstillLerret() {
+export function nullstillLerret() {
   const lerret: HTMLCanvasElement = document.getElementById( "tegneflate" ) as HTMLCanvasElement;
   lerret.width = lerret.getBoundingClientRect().width;
   lerret.height = lerret.getBoundingClientRect().height;
