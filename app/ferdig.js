@@ -1,5 +1,6 @@
 import { supabase } from "./supabaseData.js";
-import { miGruppeId } from "./hoved.js";
+import { miGruppeId, status } from "./hoved.js";
+import { vent } from "./logikk.js";
 export async function startFerdig() {
     await supabase
         .from('gruppeTabell')
@@ -8,9 +9,10 @@ export async function startFerdig() {
     const { error } = await supabase
         .from('rundeTabell')
         .delete()
-        .eq('gruppeId', miGruppeId)
-        .eq('vis', 'ferdig');
+        .eq('gruppeId', miGruppeId);
     if (error) {
         console.error('Feil ved sletting av ferdige runder:', error);
     }
+    await vent(3000);
+    status('velgGruppe');
 }

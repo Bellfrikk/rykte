@@ -2,7 +2,6 @@ import { supabase } from "./supabaseData.js";
 import { gjetteTidSetter, miGruppeId, minSpelarId, navn, naboSpelar, blokkNr, status, tegneTidSetter, antalSider, antalSiderSetter, blokkNrSetter, naboSpelarSetter } from "./hoved.js";
 import { stengspelarOppdateringKanal } from "./startFane.js";
 import { aktiverVisKnapp,endreVisSpelar } from "./vis.js";
-import { nullstillLerret } from "./tegning.js";
 import { oppdaterFarger } from "./styling.js";
 
 let side:number = 1;
@@ -42,7 +41,6 @@ export async function logikk() {
         }else {
           status('visFane');
           console.log('visningsmodus: ' + data.new.status);
-          nullstillLerret();
           oppdaterFarger(Number(data.new.status));
           aktiverVisKnapp(Number(data.new.status));
         }
@@ -79,7 +77,7 @@ export async function nesteSide() {
   }
 }
 //funksjon som venter tid mlliseksund før den gir eit svar som kan awaites på
-function vent(tid: number): Promise<void> {
+export function vent(tid: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, tid));
 }
 

@@ -65,7 +65,7 @@ export async function tegneOppsett() {
   });
 }
 
-export function nullstillLerret() {
+function nullstillTegneLerret() {
   const lerret: HTMLCanvasElement = document.getElementById( "tegneflate" ) as HTMLCanvasElement;
   lerret.width = lerret.getBoundingClientRect().width;
   lerret.height = lerret.getBoundingClientRect().height;
@@ -77,7 +77,7 @@ export function nullstillLerret() {
 
 //_________Start tegning______________________________________
 export function startTegning() {
-  nullstillLerret()
+  nullstillTegneLerret()
   startNedtelling('tegne');
 }
 
@@ -102,7 +102,7 @@ export async function lagreTegning() {
   const tegningUrl = urlData.publicUrl; //Lagre url i spelarTabell
   await lagreSide(null, tegningUrl);
 
-  nullstillLerret();
+  nullstillTegneLerret();
   document.getElementById('tegneForfattar')!.innerText = '';
   status('ventFane');
   nesteSide();

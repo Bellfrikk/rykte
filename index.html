@@ -12,7 +12,7 @@
     <div class="fane usynlig" id="gruppeFane">
       <h1>Rykte går!</h1>
       <div id="grupper">
-        <button type="button" id="lagNyGruppeKnapp">Lag ny gruppa</button>
+        <button class="velgKnapp" type="button" id="lagNyGruppeKnapp">Lag ny gruppa</button>
       </div>
     </div>
     <!-- Ny Gruppe Fane-->
@@ -29,62 +29,82 @@
       <label for="antalRundarSkyvebryter"> Antal rundar: <strong><span id="antalRundarSkyvebryterTekst">2</span></strong></label>
       <input type="range" id="antalRundarSkyvebryter" min="2" max="10" step="1" value="2" />
       <br><br>
-      <button type="button" id="lagreGruppeKnapp">Opprett gruppe</button>
+      <button class="velgKnapp" type="button" id="lagreGruppeKnapp">Opprett gruppe</button>
     </form>
     </div>
     <!-- Velg Ord Fane-->
     <div id="velgOrdFane" class="fane usynlig">
-      <p>Navn:</p>
-      <input type="text" id="spelarNavn" name="spelarNavn" placeholder="Ditt navn" required>
+      Navn:
+      <input type="text" id="spelarNavn" name="spelarNavn"  required>
       <div id="velgeOrd">
         <p>Velg kva du vil tegne:</p>
       </div>
     </div>
     <!-- Vent på Gruppe Fane-->
     <div id="startFane" class="fane usynlig">
-      <h1>Rykte går!</h1>
+      Spelarar som er med:
       <div id="gruppeInfo"></div>
-      <button class="usynlig" type="button" id="startRundeKnapp">Start Runde</button>
-      <div id="venteSpelarar">
-      </div>
+      <button class="velgKnapp usynlig" type="button" id="startRundeKnapp">Start Runde</button>
+      <div id="venteSpelarar"></div>
+      Vent til lagledar startar spelet...
     </div>
     <!-- Teine Fane-->
     <div id="tegneFane" class=" fane usynlig">
-      <div class="infoLinje">
-        <div id="tegneForfattar">K</div>
-        <div id="tegneOrd">---</div>
-        <div id="ferdigTegneKnapp"><span id="nedtellingTegning">00</span> >></div>
+      <div class="ytterboks">
+        <div class="forfattar" id="tegneForfattar">Valgt ord</div>
+        <div class="ordBoks">
+          <div id="tegneOrd"></div>
+          <button id="ferdigTegneKnapp" class=" nesteKnapp"><span id="nedtellingTegning">00</span> >></button>
+        </div>
       </div>
-      <canvas id="tegneflate"></canvas>
-      <div id="blyantViskKnapp">✏</div>
+      <div class="ytterboks">
+        <div class="forfattar">Tegn </div>
+        <div class="tegneBoks">
+          <canvas id="tegneflate"></canvas>
+          <div id="blyantViskKnapp" class="nesteKnapp">✏</div>
+        </div>
+      </div>
     </div>
     <!-- Gjette Fane-->
     <div id="gjetteFane" class="fane usynlig">
-      <div class="infoLinje">
-        <div id="gjetteForfattar">K</div>
-        <div><form id="gjettOrdForm"></form><input type="text" id="gjettaOrdFelt" name="Gjetta ord" placeholder="Skriv det du trur det er.." required></form></div>
-        <div id="ferdigGjettaKnapp"><span id="nedtellingGjetting">00</span> >></div>
+      <div class="ytterboks">
+        <div class="forfattar">Gjett kva som er tegna</div>
+          <div class="ordBoks">
+          <div><form id="gjettOrdForm"></form><input type="text" id="gjettaOrdFelt" name="Gjetta ord" placeholder="" required></form></div>
+          <button id="ferdigGjettaKnapp" class="nesteKnapp" ><span id="nedtellingGjetting">00</span> >></button>
+        </div>
       </div>
-      <img id="gjetteBilde" alt="Vent på bilde">
-    </div>
+      <div class="ytterboks">
+        <div class="forfattar" id="gjetteForfattar"></div>
+        <div class="tegneBoks">
+          <img id="gjetteBilde" alt="Vent på bilde">
+        </div>
+        </div>
+      </div>
             <!-- Vent Fane-->
     <div id="ventFane" class="fane usynlig">
       <p>Vent...</p>
-      <button class="usynlig" type="button" id="hoppOverNaboKnapp">Hopp over nabo?</button>
+      <button class="velgKnapp usynlig" type="button" id="hoppOverNaboKnapp">Hopp over nabo?</button>
     </div>
         <!-- Vis Fane-->
     <div id="visFane" class="fane usynlig">
-      <div class="infoLinje">
-        <div id="visForfattar">K</div>
-        <div id="visOrd"></div>
-        <div id="nesteVisKnapp" class="usynlig">>></div>
+      <div class="ytterboks">
+        <div class="forfattar" id="visKvenGjetta"></div>
+        <div class="ordBoks">
+          <div id="visOrd"></div>
+          <button id="nesteVisKnapp" class="usynlig nesteKnapp">>></button>
+        </div>
       </div>
-      <img id="visTegning">
+      <div class="ytterboks">
+        <div class="forfattar" id="visKvenTegna"></div>
+        <div id="visTegningBoks" class="teineBoks">
+          <img id="visTegning">
+        </div>
+      </div>
     </div>
             <!-- Ferdig Fane-->
     <div id="ferdigFane" class="fane usynlig">
-      <h1>Spillet er ferdig.</h1>
-      <p>Kjetil vant</p>
+      <h1>Ferdig...</h1>
     </div>
   </body>
   <script type="module" src="./app/hoved.js"></script>

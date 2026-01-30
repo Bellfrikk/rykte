@@ -1,6 +1,7 @@
 import { supabase } from './supabaseData.js';
 import { status, miGruppeId, minSpelarId } from "./hoved.js";
 import { startFerdig } from './ferdig.js';
+import { settTilAktivFarge } from './styling.js';
 let visKanal;
 let visSide = 0;
 export async function aktiverVisKnapp(aktivSpelar) {
@@ -23,17 +24,23 @@ export async function aktiverVisKnapp(aktivSpelar) {
 }
 export function startVis() {
     document.getElementById('nesteVisKnapp')?.addEventListener('click', () => visNeste(), true);
+    document.getElementById('visTegning').src = '';
+    document.getElementById('visOrd').innerText = '';
+    document.getElementById('visKvenGjetta').innerText = '';
+    document.getElementById('visKvenTegna').innerText = '';
     //Start kanal for vising av tegning og gjetta ord
     visKanal = supabase.channel('visKanal')
         .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rundeTabell', filter: `gruppeId=eq.${miGruppeId}` }, (data) => {
         if (data.new.vis === 'aktiv') {
             if (data.new.tegning !== null) {
-                document.getElementById('visForfattar').innerText = `${data.new.spelarNavn} tegna:`;
+                document.getElementById('visKvenTegna').innerText = `${data.new.spelarNavn}`;
                 document.getElementById('visTegning').src = data.new.tegning;
+                settTilAktivFarge('tegning');
             }
             else if (data.new.gjettaOrd !== null) {
-                document.getElementById('visForfattar').innerText = `${data.new.spelarNavn} gjetta:`;
+                document.getElementById('visKvenGjetta').innerText = `${data.new.spelarNavn}`;
                 document.getElementById('visOrd').innerText = data.new.gjettaOrd;
+                settTilAktivFarge('ord');
             }
         }
     })
@@ -108,6 +115,7 @@ export async function endreVisSpelar(spelarNr) {
         .eq('gruppeId', miGruppeId);
     if (error)
         console.error('Feil ved oppdatering av gruppestatus', error);
-    else
+    else {
         console.log('endra gruppestatus til' + spelarNr);
+    }
 }

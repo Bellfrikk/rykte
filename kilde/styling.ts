@@ -31,3 +31,14 @@ export function stylingOppsett(){
   gjetteTidSkyvebryter.addEventListener('input', oppdaterGjetteTidSkyvebryterTekst);
   antalRundarSkyvebryter.addEventListener('input', oppdaterAntalRundarSkyvebryterTekst);
 }
+export function settTilAktivFarge(type:'ord'|'tegning'){
+  if(type === 'ord'){
+  (document.getElementById('visOrdBoks') as HTMLElement).className = 'aktiv ny';
+  (document.getElementById('visTegningBoks') as HTMLElement).className = 'passiv';
+  setTimeout(() =>   (document.getElementById('visOrdBoks') as HTMLElement).className = 'aktiv', 300);
+  }else if(type === 'tegning'){
+  (document.getElementById('visTegningBoks') as HTMLElement).className = 'aktiv ny';
+  (document.getElementById('visOrdBoks') as HTMLElement).className = 'passiv';
+  setTimeout(() =>   (document.getElementById('visTegningBoks') as HTMLElement).className = 'aktiv', 300);
+  }
+}

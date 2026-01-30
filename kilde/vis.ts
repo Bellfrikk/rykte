@@ -1,6 +1,7 @@
 import { supabase } from './supabaseData.js';
 import { status, miGruppeId, minSpelarId } from "./hoved.js";
 import { startFerdig } from './ferdig.js';
+import { settTilAktivFarge } from './styling.js';
 
 let visKanal:any;
 let visSide:number = 0;
@@ -27,8 +28,12 @@ export async function aktiverVisKnapp(aktivSpelar:number){
 
 export function startVis() {
 
-  document.getElementById('nesteVisKnapp')?.addEventListener('click', ()=> visNeste(),true )
- 
+  document.getElementById('nesteVisKnapp')?.addEventListener('click', ()=> visNeste(),true );
+  (document.getElementById('visTegning') as HTMLImageElement).src = '';
+  document.getElementById('visOrd')!.innerText = '';
+  document.getElementById('visKvenGjetta')!.innerText = '';
+  document.getElementById('visKvenTegna')!.innerText = '';
+
   //Start kanal for vising av tegning og gjetta ord
   visKanal = supabase.channel('visKanal')
   .on('postgres_changes' ,
@@ -36,11 +41,13 @@ export function startVis() {
       (data: any) => {
         if (data.new.vis === 'aktiv') {
           if(data.new.tegning !== null) {
-            document.getElementById('visForfattar')!.innerText = `${data.new.spelarNavn} tegna:`;
+            document.getElementById('visKvenTegna')!.innerText = `${data.new.spelarNavn}`;
             (document.getElementById('visTegning') as HTMLImageElement).src = data.new.tegning;
+            settTilAktivFarge('tegning');
           }else if(data.new.gjettaOrd !== null) {
-            document.getElementById('visForfattar')!.innerText = `${data.new.spelarNavn} gjetta:`;
+            document.getElementById('visKvenGjetta')!.innerText = `${data.new.spelarNavn}`;
             document.getElementById('visOrd')!.innerText = data.new.gjettaOrd;
+            settTilAktivFarge('ord');
           }
         }
       }
@@ -119,5 +126,9 @@ export async function endreVisSpelar(spelarNr:Number) {
         .update({status: spelarNr})
         .eq('gruppeId', miGruppeId);
       if( error ) console.error('Feil ved oppdatering av gruppestatus', error);
-      else  console.log('endra gruppestatus til' + spelarNr);
+      else { 
+        console.log('endra gruppestatus til' + spelarNr);
+
+      }
   }
+

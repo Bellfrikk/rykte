@@ -25,3 +25,15 @@ export function stylingOppsett() {
     gjetteTidSkyvebryter.addEventListener('input', oppdaterGjetteTidSkyvebryterTekst);
     antalRundarSkyvebryter.addEventListener('input', oppdaterAntalRundarSkyvebryterTekst);
 }
+export function settTilAktivFarge(type) {
+    if (type === 'ord') {
+        document.getElementById('visOrdBoks').className = 'aktiv ny';
+        document.getElementById('visTegningBoks').className = 'passiv';
+        setTimeout(() => document.getElementById('visOrdBoks').className = 'aktiv', 300);
+    }
+    else if (type === 'tegning') {
+        document.getElementById('visTegningBoks').className = 'aktiv ny';
+        document.getElementById('visOrdBoks').className = 'passiv';
+        setTimeout(() => document.getElementById('visTegningBoks').className = 'aktiv', 300);
+    }
+}
