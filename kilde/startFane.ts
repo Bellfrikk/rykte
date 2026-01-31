@@ -4,20 +4,7 @@ let spelarOppdateringKanal:any;
 
 
 export async function startFaneOppsett (){
-
-//hent alle spelarane i gruppa og vis på venteskjermen
-const { data, error } = await supabase
-  .from('rundeTabell')
-  .select('spelarNavn')
-  .eq('gruppeId', miGruppeId) as { data: { spelarNavn: string}[] | null, error: any };
-  if (error){ console.log('feil ved henting av spelarar i startFane: ')
-     console.error(error); }
-  else if (data) {
-    console.log(data);
-    data.forEach(denne => {
-      visSpelar(denne.spelarNavn);
-    });
-  }
+oppdaterSpelarar();
 
 spelarOppdateringKanal = supabase
   .channel('spelarOppdateringKanalen')
@@ -29,9 +16,7 @@ spelarOppdateringKanal = supabase
       table: 'rundeTabell',
       filter: `gruppeId=eq.${miGruppeId}`,
     },
-    (payload:any) => {
-      visSpelar(payload.new.spelarNavn);
-      console.log('oppdatert spelarar i venterom');
+    () => { oppdaterSpelarar();
     }
   )
   .subscribe()
@@ -40,9 +25,23 @@ export function stengspelarOppdateringKanal() {
       supabase.removeChannel(spelarOppdateringKanal);
 }
 
-function visSpelar (spelarNavn:string) {
-  let nyDiv = document.createElement('div');
-  nyDiv.innerText = spelarNavn;
-  document.getElementById('venteSpelarar')?.appendChild(nyDiv);
+async function oppdaterSpelarar () {
+
+  //hent alle spelarane i gruppa og vis på venteskjermen
+const { data, error } = await supabase
+  .from('rundeTabell')
+  .select('spelarNavn')
+  .eq('gruppeId', miGruppeId) as { data: { spelarNavn: string}[] | null, error: any };
+  if (error){ console.log('feil ved henting av spelarar i startFane: ')
+     console.error(error); }
+  else if (data) {
+    const venteSpelararDiv = document.getElementById('venteSpelarar');
+    venteSpelararDiv!.innerHTML = '';
+    data.forEach(denne => {
+      let nyDiv = document.createElement('div');
+      nyDiv.innerText = denne.spelarNavn;
+      venteSpelararDiv?.appendChild(nyDiv);
+    });
+  }
 }
 

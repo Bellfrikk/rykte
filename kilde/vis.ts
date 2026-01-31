@@ -5,6 +5,7 @@ import { settTilAktivFarge } from './styling.js';
 
 let visKanal:any;
 let visSide:number = 0;
+let visNesteSperra:boolean = false;
 
 export async function aktiverVisKnapp(aktivSpelar:number){
   //aktiver neste bilde knapp visst det er di blokk som er aktiv
@@ -28,7 +29,7 @@ export async function aktiverVisKnapp(aktivSpelar:number){
 
 export function startVis() {
 
-  document.getElementById('nesteVisKnapp')?.addEventListener('click', ()=> visNeste(),true );
+  document.getElementById('nesteVisKnapp')?.addEventListener('click', visNeste);
   (document.getElementById('visTegning') as HTMLImageElement).src = '';
   document.getElementById('visOrd')!.innerText = '';
   document.getElementById('visKvenGjetta')!.innerText = '';
@@ -39,7 +40,7 @@ export function startVis() {
   .on('postgres_changes' ,
       { event: 'UPDATE', schema: 'public', table: 'rundeTabell', filter: `gruppeId=eq.${miGruppeId}` },
       (data: any) => {
-        if (data.new.vis === 'aktiv') {
+        if (data.new.vis === 'aktiv' && data.old.vis === 'ny') {
           if(data.new.tegning !== null) {
             document.getElementById('visKvenTegna')!.innerText = `${data.new.spelarNavn}`;
             (document.getElementById('visTegning') as HTMLImageElement).src = data.new.tegning;
@@ -55,7 +56,8 @@ export function startVis() {
     .subscribe();
 }
 async function visNeste () {
-      document.getElementById('nesteVisKnapp')?.classList.add('usynlig')
+  if (visNesteSperra) return;
+  visNesteSperra = true;
 
     //Hent id til den aktive runder
   const { data: aktivRunde } = await supabase
@@ -66,6 +68,7 @@ async function visNeste () {
     .maybeSingle();
 
   if (!aktivRunde) {
+    visNesteSperra = false;
     console.log('Ingen aktiv runde');
     return;
   }
@@ -87,6 +90,7 @@ async function visNeste () {
   if (!nesteRunde) {
     console.log('Visning ferdig for denne blokka');
     endreVisSpelar(minSpelarId+1);
+    visNesteSperra = false;
     return;
   }
   //endre status til aktiv for neste runde
@@ -98,7 +102,7 @@ async function visNeste () {
     console.error('Feil ved oppdatering av vis status til aktiv for neste runde:', error);
     return;
   }else{
-        document.getElementById('nesteVisKnapp')?.classList.remove('usynlig')
+    visNesteSperra = false;
   }
 }
 
