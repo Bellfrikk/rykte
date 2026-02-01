@@ -60,7 +60,7 @@
       <div class="ytterboks">
         <div class="forfattar">Tegn </div>
         <div class="tegneBoks">
-          <canvas id="tegneflate"></canvas>
+          <canvas class="tegningar" id="tegneflate"></canvas>
           <div id="blyantViskKnapp" class="nesteKnapp">✏</div>
         </div>
       </div>
@@ -77,7 +77,7 @@
       <div class="ytterboks">
         <div class="forfattar" id="gjetteForfattar"></div>
         <div class="tegneBoks">
-          <img id="gjetteBilde" alt="Vent på bilde">
+          <img class="tegningar" id="gjetteBilde" alt="Vent på bilde">
         </div>
         </div>
       </div>
@@ -88,17 +88,17 @@
     </div>
         <!-- Vis Fane-->
     <div id="visFane" class="fane usynlig">
-      <div class="ytterboks">
+      <div class="ytterboks" id="ytterboksOrd">
         <div class="forfattar" id="visKvenGjetta"></div>
         <div class="ordBoks">
           <div id="visOrd"></div>
           <button id="nesteVisKnapp" class="usynlig nesteKnapp">>></button>
         </div>
       </div>
-      <div class="ytterboks">
+      <div class="ytterboks" id="ytterboksTegning">
         <div class="forfattar" id="visKvenTegna"></div>
         <div id="visTegningBoks" class="teineBoks">
-          <img id="visTegning">
+          <img class="tegningar" id="visTegning" alt=".">
         </div>
       </div>
     </div>

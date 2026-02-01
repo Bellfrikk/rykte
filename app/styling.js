@@ -27,13 +27,11 @@ export function stylingOppsett() {
 }
 export function settTilAktivFarge(type) {
     if (type === 'ord') {
-        document.getElementById('visOrdBoks').className = 'aktiv ny';
-        document.getElementById('visTegningBoks').className = 'passiv';
-        setTimeout(() => document.getElementById('visOrdBoks').className = 'aktiv', 300);
+        document.getElementById('ytterboksOrd').classList.add('aktiv');
+        document.getElementById('ytterboksTegning').classList.remove('aktiv');
     }
     else if (type === 'tegning') {
-        document.getElementById('visTegningBoks').className = 'aktiv ny';
-        document.getElementById('visOrdBoks').className = 'passiv';
-        setTimeout(() => document.getElementById('visTegningBoks').className = 'aktiv', 300);
+        document.getElementById('ytterboksTegning').classList.add('aktiv');
+        document.getElementById('ytterboksOrd').classList.remove('aktiv');
     }
 }

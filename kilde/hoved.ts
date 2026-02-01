@@ -33,52 +33,46 @@ status('velgGruppe');
 export function status(nyStatus:'velgGruppe' | 'velgOrd'| 'lagGruppe'|'venteTilStart'|'tegneFane'|'gjetteFane'|'ventFane'|'visFane'|'ferdig'){
    
   if(nyStatus === 'velgGruppe'){
-    document.getElementById('gruppeFane')!.classList.remove('usynlig');
+    visDenneFana('gruppeFane');
     velgGruppeOppsett();
 
    }else if(nyStatus === 'lagGruppe'){
+    visDenneFana('nyGruppeFane');
     lagGruppeOppsett();
-    document.getElementById('gruppeFane')!.classList.add('usynlig');
-    document.getElementById('nyGruppeFane')!.classList.remove('usynlig');
  
   }else if(nyStatus === 'velgOrd'){
+    visDenneFana('velgOrdFane');
     velgOrdOgNavn();
-    document.getElementById('nyGruppeFane')!.classList.add('usynlig');
-    document.getElementById('gruppeFane')!.classList.add('usynlig');
-    document.getElementById('velgOrdFane')!.classList.remove('usynlig');
-    stengGrupperOppdateringKanal();//hh
+    stengGrupperOppdateringKanal();
 
   }else if(nyStatus === 'venteTilStart'){
+    visDenneFana('startFane');
     startFaneOppsett();
     logikk()
     tegneOppsett();
     gjetteOppsett();
-    document.getElementById('velgOrdFane')!.classList.add('usynlig');
-    document.getElementById('startFane')!.classList.remove('usynlig');
   
   }else if(nyStatus === 'tegneFane'){
-    document.getElementById('startFane')!.classList.add('usynlig');
-    document.getElementById('ventFane')!.classList.add('usynlig');
-    document.getElementById('tegneFane')!.classList.remove('usynlig');
+    visDenneFana('tegneFane');
     startTegning();
 
   }else if(nyStatus === 'gjetteFane'){
-    document.getElementById('ventFane')!.classList.add('usynlig');
-    document.getElementById('gjetteFane')!.classList.remove('usynlig');
+    visDenneFana('gjetteFane');
     startGjetting();
 
   }else if(nyStatus === 'ventFane'){
-    document.getElementById('tegneFane')!.classList.add('usynlig');
-    document.getElementById('gjetteFane')!.classList.add('usynlig');
-    document.getElementById('ventFane')!.classList.remove('usynlig');
+    visDenneFana('ventFane');
 
   }else if(nyStatus === 'visFane'){
-    document.getElementById('gjetteFane')!.classList.add('usynlig');
-    document.getElementById('ventFane')!.classList.add('usynlig');
-    document.getElementById('visFane')!.classList.remove('usynlig');
+    visDenneFana('visFane');
     startVis();
+    
   }else if(nyStatus === 'ferdig'){
-    document.getElementById('visFane')!.classList.add('usynlig');
-    document.getElementById('ferdigFane')!.classList.remove('usynlig');
+    visDenneFana('ferdigFane');
   }
+}
+
+function visDenneFana( nyFane:string ) {
+  document.querySelectorAll('.fane').forEach(el => el.classList.add('usynlig'));
+  document.getElementById(nyFane)!.classList.remove('usynlig');
 }

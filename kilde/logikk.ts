@@ -1,11 +1,12 @@
 import { supabase } from "./supabaseData.js";
 import { gjetteTidSetter, miGruppeId, minSpelarId, navn, naboSpelar, blokkNr, status, tegneTidSetter, antalSider, antalSiderSetter, blokkNrSetter, naboSpelarSetter } from "./hoved.js";
 import { stengspelarOppdateringKanal } from "./startFane.js";
-import { aktiverVisKnapp,endreVisSpelar } from "./vis.js";
+import { visOppsett, aktiverVisKnapp,endreVisSpelar } from "./vis.js";
 import { oppdaterFarger } from "./styling.js";
 
 let side:number = 1;
 let ventePaNabo:boolean = false;
+
 export function sideSetter(nr:number){ side = nr; }
 
 export async function logikk() {
@@ -39,6 +40,9 @@ export async function logikk() {
         }else if(data.new.status === 'ferdig'){
           status('ferdig');
         }else {
+          if(Number(data.new.status) === 1) {
+            visOppsett();
+          }
           status('visFane');
           console.log('visningsmodus: ' + data.new.status);
           oppdaterFarger(Number(data.new.status));
@@ -111,7 +115,7 @@ function aktiverTegning(ord:string, blokk:number, spelarNavn:string) {
   status('tegneFane');
 }
 
-async function aktiverGjetting(teikningUrl:string, blokk:number, spelarNavn:string) {
+function aktiverGjetting(teikningUrl:string, blokk:number, spelarNavn:string) {
   (document.getElementById('gjetteBilde') as HTMLImageElement).src = teikningUrl;
   document.getElementById('gjetteForfattar')!.innerText = spelarNavn;
   blokkNrSetter(blokk);

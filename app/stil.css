@@ -71,14 +71,13 @@ input {
   background: var(--tingPassiv);
   transition: all 0.2s ease;
   flex:1 1 1;
+    box-shadow: 0 0 0 2px var(--blokkFarge);
+
 }
 input::placeholder {
   color: var(--tekstPassiv);
 }
-input:focus {
-  border-color: var(--blokkFarge);
-  box-shadow: 0 0 0 1px var(--blokkFarge);
-}
+
 input[type="range"] {
   appearance: none;
   height: 1px;
@@ -91,6 +90,9 @@ input[type="range"] {
   width: 64px;
   height: 64px;
   border-radius: 50%;
+  background: var(--tekstAktiv);
+  border: solid 2px var(--blokkFarge);
+  margin:3px;
 }
 
 #blyantViskKnapp, #nesteVisKnapp {
@@ -103,6 +105,12 @@ input[type="range"] {
   font-weight: 700;
   text-align: left;
   font-size: clamp(1.2rem, 3vw, 2rem);
+  padding: 10px;
+}
+#tegneOrd {
+  font-weight: 900;
+  text-align: center;
+  font-size: clamp(1.3rem, 5vw, 2.4rem);
 }
 .tegneBoks {
   flex: 1 1 auto;
@@ -115,31 +123,24 @@ input[type="range"] {
 }
 
 /* canvas/bilde fyller kvadratet */
-#tegneflate,
-#visTegning {
+.tegningar {
   width: 100%;  
   height:100%;
-  border-radius: 15px;
+  border-radius: 0px 0px 11px 11px;
   object-fit: contain;
 }
 
 .ytterboks{
-  padding: 10px;
-  border-radius: 15px;
-  color: black;
-
   display: flex;
   flex-direction: column;
-
-  padding: 0;
-  display: flex;
-  gap: 16px;
+  
+  color: black;
   background: var(--blokkFarge);
   border: 3px solid var(--blokkFarge);
+  border-radius: 15px;
   transition: border-color 0.4s ease;
   overflow: hidden;
   padding: 2px;
-  gap: 12px;
 
   transition:
     background-color 0.3s ease,
@@ -147,21 +148,15 @@ input[type="range"] {
     box-shadow 0.2s ease;
 }
 
-.fordBoks.aktiv,
-.ftegneBoks.aktiv {
-  background-color: var(--blokkFarge);
+.aktiv {
   transform: scale(1.03);
-  box-shadow: 0 0 18px rgba(0, 0, 0, 0.35);
-
-  outline: 3px solid rgba(255, 255, 255, 0.6);
-  outline-offset: -3px;
 }
 .ordBoks {
   display: flex;
   width:100%;
   align-items: center;
   background-color: var(--tingPassiv);
-  border-radius: 15px;
+  border-radius: 0px 0px 11px 11px;
 }
 
 .ordBoks input, .ordBoks div {

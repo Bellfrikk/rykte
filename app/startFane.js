@@ -2,6 +2,23 @@ import { supabase } from './supabaseData.js';
 import { miGruppeId } from './hoved.js';
 let spelarOppdateringKanal;
 export async function startFaneOppsett() {
+    oppdaterSpelarar();
+    spelarOppdateringKanal = supabase
+        .channel('spelarOppdateringKanalen')
+        .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'rundeTabell',
+        filter: `gruppeId=eq.${miGruppeId}`,
+    }, () => {
+        oppdaterSpelarar();
+    })
+        .subscribe();
+}
+export function stengspelarOppdateringKanal() {
+    supabase.removeChannel(spelarOppdateringKanal);
+}
+async function oppdaterSpelarar() {
     //hent alle spelarane i gruppa og vis på venteskjermen
     const { data, error } = await supabase
         .from('rundeTabell')
@@ -12,29 +29,12 @@ export async function startFaneOppsett() {
         console.error(error);
     }
     else if (data) {
-        console.log(data);
+        const venteSpelararDiv = document.getElementById('venteSpelarar');
+        venteSpelararDiv.innerHTML = '';
         data.forEach(denne => {
-            visSpelar(denne.spelarNavn);
+            let nyDiv = document.createElement('div');
+            nyDiv.innerText = denne.spelarNavn;
+            venteSpelararDiv?.appendChild(nyDiv);
         });
     }
-    spelarOppdateringKanal = supabase
-        .channel('spelarOppdateringKanalen')
-        .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'rundeTabell',
-        filter: `gruppeId=eq.${miGruppeId}`,
-    }, (payload) => {
-        visSpelar(payload.new.spelarNavn);
-        console.log('oppdatert spelarar i venterom');
-    })
-        .subscribe();
-}
-export function stengspelarOppdateringKanal() {
-    supabase.removeChannel(spelarOppdateringKanal);
-}
-function visSpelar(spelarNavn) {
-    let nyDiv = document.createElement('div');
-    nyDiv.innerText = spelarNavn;
-    document.getElementById('venteSpelarar')?.appendChild(nyDiv);
 }

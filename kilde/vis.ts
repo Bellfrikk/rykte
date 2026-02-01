@@ -7,6 +7,28 @@ let visKanal:any;
 let visSide:number = 0;
 let visNesteSperra:boolean = false;
 
+export function visOppsett() {
+  document.getElementById('nesteVisKnapp')?.addEventListener('click', visNeste);
+  //Start kanal for vising av tegning og gjetta ord
+  visKanal = supabase.channel('visKanal')
+  .on('postgres_changes' ,
+      { event: 'UPDATE', schema: 'public', table: 'rundeTabell', filter: `gruppeId=eq.${miGruppeId}` },
+      (data: any) => {
+        if (data.new.vis === 'aktiv') {
+          if(data.new.tegning !== null) {
+            document.getElementById('visKvenTegna')!.innerText = `${data.new.spelarNavn}`;
+            (document.getElementById('visTegning') as HTMLImageElement).src = data.new.tegning;
+            settTilAktivFarge('tegning');
+          }else if(data.new.gjettaOrd !== null) {
+            document.getElementById('visKvenGjetta')!.innerText = `${data.new.spelarNavn}`;
+            document.getElementById('visOrd')!.innerText = data.new.gjettaOrd;
+            settTilAktivFarge('ord');
+          }
+        }
+      }
+    )
+    .subscribe();
+}
 export async function aktiverVisKnapp(aktivSpelar:number){
   //aktiver neste bilde knapp visst det er di blokk som er aktiv
   if(aktivSpelar === minSpelarId){
@@ -29,31 +51,10 @@ export async function aktiverVisKnapp(aktivSpelar:number){
 
 export function startVis() {
 
-  document.getElementById('nesteVisKnapp')?.addEventListener('click', visNeste);
   (document.getElementById('visTegning') as HTMLImageElement).src = '';
   document.getElementById('visOrd')!.innerText = '';
   document.getElementById('visKvenGjetta')!.innerText = '';
   document.getElementById('visKvenTegna')!.innerText = '';
-
-  //Start kanal for vising av tegning og gjetta ord
-  visKanal = supabase.channel('visKanal')
-  .on('postgres_changes' ,
-      { event: 'UPDATE', schema: 'public', table: 'rundeTabell', filter: `gruppeId=eq.${miGruppeId}` },
-      (data: any) => {
-        if (data.new.vis === 'aktiv' && data.old.vis === 'ny') {
-          if(data.new.tegning !== null) {
-            document.getElementById('visKvenTegna')!.innerText = `${data.new.spelarNavn}`;
-            (document.getElementById('visTegning') as HTMLImageElement).src = data.new.tegning;
-            settTilAktivFarge('tegning');
-          }else if(data.new.gjettaOrd !== null) {
-            document.getElementById('visKvenGjetta')!.innerText = `${data.new.spelarNavn}`;
-            document.getElementById('visOrd')!.innerText = data.new.gjettaOrd;
-            settTilAktivFarge('ord');
-          }
-        }
-      }
-    )
-    .subscribe();
 }
 async function visNeste () {
   if (visNesteSperra) return;
