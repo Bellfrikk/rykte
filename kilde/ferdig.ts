@@ -7,7 +7,9 @@ export async function startFerdig() {
     .from('gruppeTabell')
     .update({ status: 'ferdig' })
     .eq('gruppeId', miGruppeId);
-  
+    
+    await vent(3000);
+
     const{ error } = await supabase
     .from('rundeTabell')
     .delete()
@@ -15,6 +17,12 @@ export async function startFerdig() {
     if(error){
       console.error('Feil ved sletting av ferdige runder:', error);
     }
-    await vent(3000);
-    status('velgGruppe');
+    
+    const{ error:error2 } = await supabase
+    .from('gruppeTabell')
+    .delete()
+    .eq('gruppeId', miGruppeId)
+    if(error2){
+      console.error('Feil ved sletting av ferdige gruppe:', error2);
+    }
 }

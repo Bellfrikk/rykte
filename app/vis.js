@@ -12,6 +12,7 @@ export function visOppsett() {
         .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rundeTabell', filter: `gruppeId=eq.${miGruppeId}` }, (data) => {
         if (data.new.vis === 'aktiv') {
             if (data.new.tegning !== null) {
+                document.getElementById('visTegning').classList.remove('usynlig');
                 document.getElementById('visKvenTegna').innerText = `${data.new.spelarNavn}`;
                 document.getElementById('visTegning').src = data.new.tegning;
                 settTilAktivFarge('tegning');
@@ -44,7 +45,7 @@ export async function aktiverVisKnapp(aktivSpelar) {
     }
 }
 export function startVis() {
-    document.getElementById('visTegning').src = '';
+    document.getElementById('visTegning').classList.add('usynlig');
     document.getElementById('visOrd').innerText = '';
     document.getElementById('visKvenGjetta').innerText = '';
     document.getElementById('visKvenTegna').innerText = '';

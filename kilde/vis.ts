@@ -16,6 +16,7 @@ export function visOppsett() {
       (data: any) => {
         if (data.new.vis === 'aktiv') {
           if(data.new.tegning !== null) {
+            document.getElementById('visTegning')!.classList.remove('usynlig');
             document.getElementById('visKvenTegna')!.innerText = `${data.new.spelarNavn}`;
             (document.getElementById('visTegning') as HTMLImageElement).src = data.new.tegning;
             settTilAktivFarge('tegning');
@@ -51,7 +52,7 @@ export async function aktiverVisKnapp(aktivSpelar:number){
 
 export function startVis() {
 
-  (document.getElementById('visTegning') as HTMLImageElement).src = '';
+  document.getElementById('visTegning')!.classList.add('usynlig');
   document.getElementById('visOrd')!.innerText = '';
   document.getElementById('visKvenGjetta')!.innerText = '';
   document.getElementById('visKvenTegna')!.innerText = '';

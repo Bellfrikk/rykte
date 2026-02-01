@@ -5,7 +5,7 @@ import { lagGruppeOppsett } from './lagGruppe.js';
 import { startFaneOppsett } from './startFane.js';
 import { tegneOppsett, startTegning } from './tegning.js';
 import { startGjetting, gjetteOppsett } from './gjettOrd.js';
-import { logikk } from './logikk.js';
+import { logikk, vent } from './logikk.js';
 import { startVis } from './vis.js';
 import { oppdaterFarger } from './styling.js';
 import { stylingOppsett } from './styling.js';
@@ -27,7 +27,7 @@ export let blokkNr;
 export function blokkNrSetter(nyNr) { blokkNr = nyNr; oppdaterFarger(blokkNr); console.log('min blokkNr er satt til ' + blokkNr); }
 stylingOppsett();
 status('velgGruppe');
-export function status(nyStatus) {
+export async function status(nyStatus) {
     if (nyStatus === 'velgGruppe') {
         visDenneFana('gruppeFane');
         velgGruppeOppsett();
@@ -65,6 +65,8 @@ export function status(nyStatus) {
     }
     else if (nyStatus === 'ferdig') {
         visDenneFana('ferdigFane');
+        await vent(3000);
+        status('velgGruppe');
     }
 }
 function visDenneFana(nyFane) {

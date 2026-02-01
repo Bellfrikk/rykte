@@ -39,6 +39,7 @@ export async function logikk() {
         }else if(data.new.status === 'ny'){
         }else if(data.new.status === 'ferdig'){
           status('ferdig');
+
         }else {
           if(Number(data.new.status) === 1) {
             visOppsett();

@@ -2,9 +2,12 @@ import { ord } from './ord.js';
 import { status, navnSetter } from './hoved.js';
 import { lagreSide } from './logikk.js';
 export function velgOrdOgNavn() {
+    document.getElementById('velgeOrd').innerHTML = ''; //fjerne valg fra forrige runde
+    const ordKopi = [...ord];
     for (let i = 0; i < 4; i++) {
         let nyKnapp = document.createElement('button');
-        const valgtOrd = ord[Math.floor(Math.random() * ord.length)];
+        const index = Math.floor(Math.random() * ordKopi.length);
+        const valgtOrd = ordKopi.splice(index, 1)[0];
         nyKnapp.innerText = valgtOrd;
         nyKnapp.classList.add('ordKnapp');
         nyKnapp.disabled = true;

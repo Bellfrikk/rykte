@@ -34,6 +34,15 @@ export async function velgGruppeOppsett() {
             if (knapp)
                 knapp.remove();
         }
+    }).on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'gruppeTabell',
+    }, (payload) => {
+        //Slett knapp om gruppa er sletta
+        const knapp = document.getElementById(payload.old.gruppeId);
+        if (knapp)
+            knapp.remove();
     })
         .subscribe();
 }

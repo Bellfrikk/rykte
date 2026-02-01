@@ -5,7 +5,7 @@ import { lagGruppeOppsett } from './lagGruppe.js';
 import { startFaneOppsett } from './startFane.js';
 import { tegneOppsett, startTegning } from './tegning.js';
 import { startGjetting, gjetteOppsett } from './gjettOrd.js';
-import { logikk } from './logikk.js';
+import { logikk, vent } from './logikk.js';
 import { startVis } from './vis.js';
 import { oppdaterFarger } from './styling.js';
 import { stylingOppsett } from './styling.js';
@@ -30,7 +30,7 @@ export function blokkNrSetter(nyNr:number){ blokkNr = nyNr; oppdaterFarger(blokk
 stylingOppsett();
 status('velgGruppe');
 
-export function status(nyStatus:'velgGruppe' | 'velgOrd'| 'lagGruppe'|'venteTilStart'|'tegneFane'|'gjetteFane'|'ventFane'|'visFane'|'ferdig'){
+export async function status(nyStatus:'velgGruppe' | 'velgOrd'| 'lagGruppe'|'venteTilStart'|'tegneFane'|'gjetteFane'|'ventFane'|'visFane'|'ferdig'){
    
   if(nyStatus === 'velgGruppe'){
     visDenneFana('gruppeFane');
@@ -66,9 +66,11 @@ export function status(nyStatus:'velgGruppe' | 'velgOrd'| 'lagGruppe'|'venteTilS
   }else if(nyStatus === 'visFane'){
     visDenneFana('visFane');
     startVis();
-    
+
   }else if(nyStatus === 'ferdig'){
     visDenneFana('ferdigFane');
+    await vent(3000);
+    status('velgGruppe');
   }
 }
 
