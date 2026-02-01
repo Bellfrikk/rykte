@@ -42,7 +42,6 @@ h1 {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 16px;
   background: var(--faneBakgrunn);
   border-radius: 15px;
