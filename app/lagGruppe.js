@@ -1,13 +1,9 @@
 import { status, gruppeIdSetter, antalSiderSetter, gjetteTidSetter, tegneTidSetter, spelarIdSetter, blokkNrSetter } from './hoved.js';
 import { supabase } from './supabaseData.js';
-import { startGruppa } from './startGruppa.js';
 export function lagGruppeOppsett() {
     document.getElementById('lagreGruppeKnapp')?.addEventListener('click', () => lagGruppe());
 }
 async function lagGruppe() {
-    //Aktiver start gruppeknapp for den som lager gruppa
-    document.getElementById('startRundeKnapp').addEventListener('click', () => startGruppa());
-    document.getElementById('startRundeKnapp').classList.remove('usynlig');
     //Lagre data om gruppa i databasen
     const gruppeNavnInput = document.getElementById('gruppeNavn');
     const gruppeNavn = gruppeNavnInput.value.trim();

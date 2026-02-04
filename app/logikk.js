@@ -1,5 +1,5 @@
 import { supabase } from "./supabaseData.js";
-import { gjetteTidSetter, miGruppeId, minSpelarId, navn, naboSpelar, blokkNr, status, tegneTidSetter, antalSider, antalSiderSetter, blokkNrSetter, naboSpelarSetter } from "./hoved.js";
+import { hentGruppeInfo, miGruppeId, minSpelarId, navn, naboSpelar, blokkNr, status, antalSider, blokkNrSetter, naboSpelarSetter } from "./hoved.js";
 import { stengspelarOppdateringKanal } from "./startFane.js";
 import { visOppsett, aktiverVisKnapp, endreVisSpelar } from "./vis.js";
 import { oppdaterFarger } from "./styling.js";
@@ -7,22 +7,8 @@ let side = 1;
 let ventePaNabo = false;
 export function sideSetter(nr) { side = nr; }
 export async function logikk() {
-    //hent gruppeinfo
-    const { data, error } = await supabase
-        .from('gruppeTabell')
-        .select('tegneTid, gjetteTid, antalSider')
-        .eq('gruppeId', miGruppeId)
-        .single();
-    if (error) {
-        console.error('Feil ved henting av gruppeinfo ');
-        console.error(error);
-    }
-    else if (data) {
-        console.log('Gruppeinfo hentet for logikk: ', data);
-        tegneTidSetter(data.tegneTid);
-        gjetteTidSetter(data.gjetteTid);
-        antalSiderSetter(data.antalSider);
-    }
+    hentGruppeInfo();
+    ventePaNabo = false;
     //start lytting på gruppestatus
     const gruppeStatusKanal = supabase.channel('gruppeStatus')
         .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'gruppeTabell', filter: `gruppeId=eq.${miGruppeId}` }, (data) => {
@@ -166,7 +152,7 @@ async function endreStatusTilVis() {
         .eq('side', 99);
     if (errorOppdater)
         console.error('Feil ved oppdatering av min status til ferdig:', errorOppdater);
-    console.log('edra side 9 til 0, spelar::' + minSpelarId);
+    console.log('edra side 99 til 0, spelar::' + minSpelarId);
     //hent alle spelarar som ennå har side 99/uferdige 
     const { data, error } = await supabase
         .from('rundeTabell')

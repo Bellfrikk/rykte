@@ -7,9 +7,7 @@ export function lagGruppeOppsett(){
 }
 
 async function lagGruppe() {
-  //Aktiver start gruppeknapp for den som lager gruppa
-  document.getElementById('startRundeKnapp')!.addEventListener('click', () => startGruppa());
-  document.getElementById('startRundeKnapp')!.classList.remove('usynlig');
+
   //Lagre data om gruppa i databasen
   const gruppeNavnInput = document.getElementById('gruppeNavn') as HTMLInputElement;
   const gruppeNavn:string = gruppeNavnInput.value.trim();

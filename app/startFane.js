@@ -1,8 +1,14 @@
 import { supabase } from './supabaseData.js';
-import { miGruppeId } from './hoved.js';
+import { miGruppeId, minSpelarId } from './hoved.js';
+import { startGruppa } from './startGruppa.js';
 let spelarOppdateringKanal;
 export async function startFaneOppsett() {
     oppdaterSpelarar();
+    if (minSpelarId === 1) {
+        //Aktiver start gruppeknapp for den som lager gruppa
+        document.getElementById('startRundeKnapp').addEventListener('click', () => startGruppa());
+        document.getElementById('startRundeKnapp').classList.remove('usynlig');
+    }
     spelarOppdateringKanal = supabase
         .channel('spelarOppdateringKanalen')
         .on('postgres_changes', {
