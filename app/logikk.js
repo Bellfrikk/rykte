@@ -3,9 +3,10 @@ import { hentGruppeInfo, miGruppeId, minSpelarId, navn, naboSpelar, blokkNr, sta
 import { stengspelarOppdateringKanal } from "./startFane.js";
 import { visOppsett, aktiverVisKnapp, endreVisSpelar } from "./vis.js";
 import { oppdaterFarger } from "./styling.js";
-let side = 1;
+let side = 2;
 let ventePaNabo = false;
-export function sideSetter(nr) { side = nr; }
+export function ventePaNaboSetter() { ventePaNabo = true; console.log('ventePaNabo er satt til true'); }
+export function sideSetter(nr) { side = nr; console.log('side er satt til ' + side); }
 export async function logikk() {
     hentGruppeInfo();
     ventePaNabo = false;
@@ -37,6 +38,7 @@ export async function logikk() {
 }
 let venteNaboTid = 0;
 export async function nesteSide() {
+    console.log('nesteSide funksjon kalla, side er: ' + side + ' av ' + antalSider);
     if (side >= antalSider) {
         endreStatusTilVis();
         return;
@@ -143,22 +145,22 @@ async function byttNabo() {
 //------- overgang til VIS
 async function endreStatusTilVis() {
     console.log('gå til visnings modus');
-    //endre side på min første runde frå 99 til 0 for å indikere at eg er ferdig
+    //endre side på min første runde frå 0 til 1 for å indikere at eg er ferdig
     const { error: errorOppdater } = await supabase
         .from('rundeTabell')
-        .update({ side: 0 })
+        .update({ side: 1 })
         .eq('gruppeId', miGruppeId)
         .eq('spelarNr', minSpelarId)
-        .eq('side', 99);
+        .eq('side', 0);
     if (errorOppdater)
         console.error('Feil ved oppdatering av min status til ferdig:', errorOppdater);
-    console.log('edra side 99 til 0, spelar::' + minSpelarId);
-    //hent alle spelarar som ennå har side 99/uferdige 
+    console.log('edra side 0 til 1, spelar::' + minSpelarId);
+    //hent alle spelarar som ennå har side /uferdige 
     const { data, error } = await supabase
         .from('rundeTabell')
         .select('spelarNavn')
         .eq('gruppeId', miGruppeId)
-        .eq('side', 99);
+        .eq('side', 0);
     if (error)
         console.error('Feil ved sjekk om alle er ferdig:', error);
     //endre gruppe status visst du er sist

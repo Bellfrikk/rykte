@@ -40,10 +40,10 @@ export async function aktiverVisKnapp(aktivSpelar:number){
       .from( 'rundeTabell' )
       .update( { vis: 'aktiv' } )
       .eq( 'gruppeId', miGruppeId )
-      .eq( 'side', 0 )
+      .eq( 'side', 1 )
       .eq( 'blokk', minSpelarId );
 
-    if( error ) console.error('Feil ved lagring av vis runde 0, feil: ' + error);
+    if( error ) console.error('Feil ved lagring av vis runde 1, feil: ' + error);
 
   }else{
     document.getElementById('nesteVisKnapp')?.classList.add('usynlig')
@@ -116,7 +116,7 @@ export async function endreVisSpelar(spelarNr:Number) {
       .select('vis')
       .eq('gruppeId', miGruppeId)
       .eq('spelarNr', spelarNr)
-      .eq('side',0)
+      .eq('side',1);
 
       if( feil) {
       console.error('Feil ved sjekk om neste spelar finnst:', feil);

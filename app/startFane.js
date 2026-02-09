@@ -12,7 +12,7 @@ export async function startFaneOppsett() {
     spelarOppdateringKanal = supabase
         .channel('spelarOppdateringKanalen')
         .on('postgres_changes', {
-        event: 'INSERT',
+        event: '*',
         schema: 'public',
         table: 'rundeTabell',
         filter: `gruppeId=eq.${miGruppeId}`,

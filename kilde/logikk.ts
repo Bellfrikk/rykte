@@ -4,10 +4,11 @@ import { stengspelarOppdateringKanal } from "./startFane.js";
 import { visOppsett, aktiverVisKnapp,endreVisSpelar } from "./vis.js";
 import { oppdaterFarger } from "./styling.js";
 
-let side:number = 1;
+let side:number = 2;
 let ventePaNabo:boolean = false;
+export function ventePaNaboSetter() { ventePaNabo = true; console.log('ventePaNabo er satt til true'); }
 
-export function sideSetter(nr:number){ side = nr; }
+export function sideSetter(nr:number){ side = nr; console.log('side er satt til '+ side); }
 
 export async function logikk() {
   hentGruppeInfo();
@@ -45,6 +46,7 @@ export async function logikk() {
 
 let venteNaboTid = 0;
 export async function nesteSide() {
+  console.log('nesteSide funksjon kalla, side er: ' + side + ' av ' + antalSider);
   if( side >= antalSider ) {
     endreStatusTilVis();
     return;
@@ -153,22 +155,22 @@ export async function lagreSide(ord:string|null, tegning:string|null, denneSide:
 
 async function endreStatusTilVis() {
     console.log('gå til visnings modus');
-    //endre side på min første runde frå 99 til 0 for å indikere at eg er ferdig
+    //endre side på min første runde frå 0 til 1 for å indikere at eg er ferdig
     const { error: errorOppdater } = await supabase
       .from('rundeTabell')
-      .update({side: 0})
+      .update({side: 1})
       .eq('gruppeId', miGruppeId)
       .eq('spelarNr', minSpelarId)
-      .eq('side', 99);
+      .eq('side', 0);
     if( errorOppdater ) console.error('Feil ved oppdatering av min status til ferdig:', errorOppdater);
-  console.log('edra side 99 til 0, spelar::' + minSpelarId);
+  console.log('edra side 0 til 1, spelar::' + minSpelarId);
 
-    //hent alle spelarar som ennå har side 99/uferdige 
+    //hent alle spelarar som ennå har side /uferdige 
     const { data, error } = await supabase
       .from('rundeTabell')
       .select('spelarNavn')
       .eq('gruppeId', miGruppeId)
-      .eq('side', 99);
+      .eq('side', 0);
     if( error ) console.error('Feil ved sjekk om alle er ferdig:', error);
 
     //endre gruppe status visst du er sist

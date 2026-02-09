@@ -3,6 +3,9 @@ export function oppdaterFarger(nr) {
     const farge = `hsl(${hue}, 70%, 60%)`;
     document.documentElement.style.setProperty('--blokkFarge', farge);
 }
+export function tilbakestillFarger() {
+    document.documentElement.style.setProperty('--blokkFarge', 'var(--tingAktiv)');
+}
 const tegneTidSkyvebryter = document.getElementById('tegneTidSkyvebryter');
 function oppdaterTegneTidSkyvebryterTekst() {
     const nr = Number(tegneTidSkyvebryter.value);

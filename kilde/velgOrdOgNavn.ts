@@ -1,6 +1,6 @@
 import { ord } from './ord.js';
 import { status, navnSetter} from './hoved.js';
-import { lagreSide, sideSetter } from './logikk.js';
+import { lagreSide } from './logikk.js';
 
 export function velgOrdOgNavn() {
   document.getElementById('velgeOrd')!.innerHTML = '';//fjerne valg fra forrige runde
@@ -14,7 +14,7 @@ export function velgOrdOgNavn() {
     nyKnapp.disabled = true;
     nyKnapp.addEventListener('click', (knapp) => {
       document.getElementById('tegneOrd')!.innerText = (knapp.target as HTMLButtonElement).innerText;
-      lagreSide( valgtOrd,null,99 ); //lagre side 99 for å markere Uferdig
+      lagreSide( valgtOrd,null,0 ); 
       status('venteTilStart');
     });
     document.getElementById('velgeOrd')?.appendChild(nyKnapp);

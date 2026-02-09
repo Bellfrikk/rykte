@@ -14,13 +14,13 @@
     <!-- Gruppe Fane-->
     <div class="fane usynlig" id="gruppeFane">
       <img id="logo" src="./app/logo.png" alt="Rykte går!">
-      <div id="grupper">
+      <div class="medSkroll" id="grupper">
         <button class="velgKnapp" type="button" id="lagNyGruppeKnapp">Lag ny gruppa</button>
       </div>
     </div>
     <!-- Ny Gruppe Fane-->
     <div class="fane usynlig" id="nyGruppeFane">
-    <form id="nyGruppeForm">
+    <form class="medSkroll" id="nyGruppeForm">
       <label for="gruppeNavn">Gruppenavn: </label>
       <input type="text" id="gruppeNavn" name="gruppeNavn" required>
       <label for="tegneTidSkyvebryter"> Tegne tid: <strong><span id="tegneTidSkyvebryterTekst">Evig</span></strong></label>
@@ -39,7 +39,7 @@
     <div id="velgOrdFane" class="fane usynlig">
       Navn:
       <input type="text" id="spelarNavn" name="spelarNavn"  required>
-      <div id="velgeOrd">
+      <div class="medSkroll" id="velgeOrd">
         <p>Velg kva du vil tegne:</p>
       </div>
     </div>

@@ -5,9 +5,9 @@ import { lagGruppeOppsett } from './lagGruppe.js';
 import { startFaneOppsett } from './startFane.js';
 import { tegneOppsett, startTegning } from './tegning.js';
 import { startGjetting, gjetteOppsett } from './gjettOrd.js';
-import { logikk, nesteSide, sideSetter, vent } from './logikk.js';
+import { logikk, ventePaNaboSetter, nesteSide, sideSetter, vent } from './logikk.js';
 import { startVis } from './vis.js';
-import { oppdaterFarger } from './styling.js';
+import { oppdaterFarger, tilbakestillFarger } from './styling.js';
 import { stylingOppsett } from './styling.js';
 import { supabase } from './supabaseData.js';
 
@@ -38,45 +38,54 @@ async function sjekkOmMidtIspel(){
   console.log('lagradata: '+ lagra)
 
   if (lagra) {
-    //lagre data som var lagra
-    const data = JSON.parse(lagra);
-      console.log(data)
+    if(!confirm('Trykk "OK" for å fortsette spelet, eller "Avbryt" for å starte på nytt.')) {
+      localStorage.removeItem('ryktegår');
+      status('velgGruppe');
+      return;
+    }else{
+      //lagre data som var lagra
+      const data = JSON.parse(lagra);
+        console.log(data)
 
-    navnSetter(data.navn);
-    gruppeIdSetter(data.miGruppeId);
-    spelarIdSetter(data.minSpelarId);
-    naboSpelarSetter(data.naboSpelar);
-    await hentGruppeInfo();//henter info om gruppa ikludert gruppestatus
-    console.log('henta status er: '+ gruppeStatus);
+      navnSetter(data.navn);
+      gruppeIdSetter(data.miGruppeId);
+      spelarIdSetter(data.minSpelarId);
+      naboSpelarSetter(data.naboSpelar);
+      await hentGruppeInfo();//henter info om gruppa ikludert gruppestatus
+      console.log('henta status er: '+ gruppeStatus);
 
-    //gå tilbake til venterom om statusen er ny
-    if(gruppeStatus === 'ny') {
-      status('venteTilStart')
+      //gå tilbake til venterom om statusen er ny
+      if(gruppeStatus === 'ny') {
+        status('venteTilStart')
 
-    // gå til tegne eller gjettefase om statusen er aktiv
-    }else if(gruppeStatus === 'aktiv') {
-    status('venteTilStart')// for å aktivere gruppestatus kanal osv
+      // gå til tegne eller gjettefase om statusen er aktiv
+      }else if(gruppeStatus === 'aktiv') {
+        logikk()
+        tegneOppsett();
+        gjetteOppsett();
 
-    const { data: runde } = await supabase
-    .from('rundeTabell')
-    .select('side')
-    .eq('gruppeId', miGruppeId)
-    .eq('blokk', minSpelarId)
-    .order('side', { ascending: false })
-    .limit(1)
-    .maybeSingle();
+      const { data: runde } = await supabase
+       .from('rundeTabell')
+       .select('side')
+       .eq('gruppeId', miGruppeId)
+       .eq('blokk', minSpelarId)
+       .order('side', { ascending: false })
+       .limit(1)
+       .maybeSingle();
 
-    if(runde) {
-      sideSetter(runde.side);
-      nesteSide();
+        if(runde) {
+          sideSetter(runde.side);
+          ventePaNaboSetter();
+          nesteSide();
+        }
+      //gå tilferdigfane om du kom tilbake når gruppa er ferdig|
+      }else if(gruppeStatus === 'ferdig') {
+        status('ferdig');
+      }else {
+        status('visFane');
+      }
+      //om det ikkje er lagra data så start på nytt
     }
-    //gå tilferdigfane om du kom tilbake når gruppa er ferdig|
-    }else if(gruppeStatus === 'ferdig') {
-      status('ferdig');
-    }else {
-      status('visFane');
-    }
-    //om det ikkje er lagra data så start på nytt
   }else {
     status('velgGruppe');
   }
@@ -123,6 +132,7 @@ export async function status(nyStatus:'velgGruppe' | 'velgOrd'| 'lagGruppe'|'ven
   }else if(nyStatus === 'ferdig'){
     visDenneFana('ferdigFane');
     await vent(3000);
+    tilbakestillFarger();
     status('velgGruppe');
   }
 }

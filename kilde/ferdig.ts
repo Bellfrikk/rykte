@@ -8,8 +8,8 @@ export async function startFerdig() {
     .update({ status: 'ferdig' })
     .eq('gruppeId', miGruppeId);
     
-    await vent(3000);
-
+    await vent(1000);
+    
     const{ error } = await supabase
     .from('rundeTabell')
     .delete()
